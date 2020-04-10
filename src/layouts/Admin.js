@@ -24,11 +24,6 @@ import AdminNavbar from "components/Navbars/AdminNavbar.js";
 import AdminFooter from "components/Footers/AdminFooter.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 
-import { Auth } from "aws-amplify";
-
-import ProtectedRoute from "components/ProtectedRoute";
-import LoginRoute from "components/LoginRoute";
-
 import routes from "routes.js";
 
 class Admin extends React.Component {
@@ -43,9 +38,9 @@ class Admin extends React.Component {
     }).catch(err => console.log("CURRENT USER INFO: ", err))
   }*/
 
-  constructor(props){
+  /*constructor(props){
     super(props)
-  }
+  }*/
 
   componentDidUpdate(e) {
     document.documentElement.scrollTop = 0;

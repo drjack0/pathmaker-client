@@ -17,7 +17,6 @@
 */
 import React from "react";
 import { Link } from "react-router-dom";
-import { Auth } from "aws-amplify";
 // reactstrap components
 import {
   DropdownMenu,

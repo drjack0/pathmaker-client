@@ -15,7 +15,7 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React, {useState} from "react";
+import React from "react";
 import {withRouter} from "react-router-dom";
 
 
@@ -35,7 +35,6 @@ import {
 // core components
 import UserHeader from "components/Headers/UserHeader.js";
 import { Auth } from "aws-amplify";
-import { isConstructorDeclaration } from "typescript";
 
 class Profile extends React.Component {
   constructor(props){

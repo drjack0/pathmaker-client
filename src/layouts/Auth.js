@@ -27,9 +27,9 @@ import AuthFooter from "components/Footers/AuthFooter.js";
 import routes from "routes.js";
 
 class Auth extends React.Component {
-  constructor(props){
+  /*constructor(props){
     super(props);
-  }
+  }*/
 
   componentDidMount() {
     document.body.classList.add("bg-default");

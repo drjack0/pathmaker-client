@@ -15,9 +15,9 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React, {useState, useEffect, useHistory} from "react";
+import React, {useState, useEffect} from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter, Route, Switch, Redirect, withRouter } from "react-router-dom";
+import { BrowserRouter, Switch, Redirect, withRouter } from "react-router-dom";
 
 import Amplify, { Auth } from "aws-amplify";
 import config from "./config.js";
@@ -31,7 +31,6 @@ import AuthLayout from "layouts/Auth.js";
 
 import ProtectedRoute from "components/ProtectedRoute";
 import LoginRoute from "components/LoginRoute";
-import Unauthorized from "components/Unauthorized";
 
 Amplify.configure({
   Auth: {

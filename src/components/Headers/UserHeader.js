@@ -19,12 +19,12 @@ import React from "react";
 import { withRouter } from "react-router-dom";
 
 // reactstrap components
-import { Button, Container, Row, Col } from "reactstrap";
+import { Container, Row, Col } from "reactstrap";
 
 class UserHeader extends React.Component {
-  constructor(props){
+  /*constructor(props){
     super(props)
-  }
+  }*/
   render() {
     return (
       <>
