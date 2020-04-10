@@ -54,7 +54,7 @@ Amplify.configure({
   API: {
     endpoints: [
       {
-        name: "pmReparto",
+        name: "pathMaker",
         endpoint: config.apiGateway.URL,
         region: config.apiGateway.REGION
       },
@@ -70,7 +70,7 @@ function App (props){
   const [userEmail,setUserEmail] = useState("");
   const [check, setCheck] = useState(false);
 
-  const[isAuthenticating, setIsAuthenticating] = useState(true);
+  const [isAuthenticating, setIsAuthenticating] = useState(true);
 
   const [userAnnoCoca, setUserAnnoCoca] = useState("");
   const [userFormazione, setUserFormazione] = useState("");

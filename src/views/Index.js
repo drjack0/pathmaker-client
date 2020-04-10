@@ -60,6 +60,7 @@ class Index extends React.Component {
       parseOptions(Chart, chartOptions());
     }
   }
+
   toggleNavs = (e, index) => {
     e.preventDefault();
     this.setState({
@@ -68,7 +69,58 @@ class Index extends React.Component {
         this.state.chartExample1Data === "data1" ? "data2" : "data1"
     });
   };
+
+  renderSquadTable = () => {
+    return this.props.squad.map((sq,i) => {
+      const {squadriglia, genere, lavoraPer} = sq;
+      return (
+        <tr key={squadriglia}>
+          <th scope="row">{squadriglia}</th>
+          <td>{genere}</td>
+          <td>{lavoraPer}</td>
+          <td>
+            <i className="fas fa-location-arrow text-success mr-3" />
+            <a href={"/squadriglia/"+squadriglia}> Scopri </a>
+          </td>
+        </tr>
+      )
+    })
+  }
+
+  renderBudgetTable = () => {
+    return this.props.budget.map((bud,i) => {
+      const {cashId, nomeOp, updatedAt, typeOp, amount} = bud;     
+      const temp = new Date(updatedAt);
+      const date = temp.getDate() + "/" + (temp.getMonth()+1) + "/" + temp.getFullYear()
+
+      if(typeOp === "+" && temp.getMonth() === new Date(Date.now()).getMonth()){
+        return (
+          <tr key={cashId}>
+            <th scope="row">{nomeOp}</th>
+            <td>{date}</td>
+            <td>
+              <i className="fas fa-plus text-success mr-3" />{amount}
+            </td>
+          </tr>
+        )
+      } else if(typeOp === "-" && temp.getMonth() == new Date(Date.now()).getMonth()) {
+        return (
+          <tr key={cashId}>
+            <th scope="row">{nomeOp}</th>
+            <td>{updatedAt}</td>
+            <td>
+              <i className="fas fa-minus text-warning mr-3" />{amount}
+            </td>
+          </tr>
+        )
+      }      
+    })
+  }
+
   render() {
+    console.log("INDEX PROPS",this.props);
+    console.log("INDEX STATE",this.state)
+    
     return (
       <>
         <Header />
@@ -158,7 +210,7 @@ class Index extends React.Component {
                 <CardHeader className="border-0">
                   <Row className="align-items-center">
                     <div className="col">
-                      <h3 className="mb-0">Page visits</h3>
+                      <h3 className="mb-0">Squadriglie</h3>
                     </div>
                     <div className="col text-right">
                       <Button
@@ -167,7 +219,7 @@ class Index extends React.Component {
                         onClick={e => e.preventDefault()}
                         size="sm"
                       >
-                        See all
+                        Vedi tutto
                       </Button>
                     </div>
                   </Row>
@@ -175,58 +227,14 @@ class Index extends React.Component {
                 <Table className="align-items-center table-flush" responsive>
                   <thead className="thead-light">
                     <tr>
-                      <th scope="col">Page name</th>
-                      <th scope="col">Visitors</th>
-                      <th scope="col">Unique users</th>
-                      <th scope="col">Bounce rate</th>
+                      <th scope="col">Squadriglia</th>
+                      <th scope="col">Genere</th>
+                      <th scope="col">Lavora Per</th>
+                      <th scope="col"></th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <th scope="row">/argon/</th>
-                      <td>4,569</td>
-                      <td>340</td>
-                      <td>
-                        <i className="fas fa-arrow-up text-success mr-3" />{" "}
-                        46,53%
-                      </td>
-                    </tr>
-                    <tr>
-                      <th scope="row">/argon/index.html</th>
-                      <td>3,985</td>
-                      <td>319</td>
-                      <td>
-                        <i className="fas fa-arrow-down text-warning mr-3" />{" "}
-                        46,53%
-                      </td>
-                    </tr>
-                    <tr>
-                      <th scope="row">/argon/charts.html</th>
-                      <td>3,513</td>
-                      <td>294</td>
-                      <td>
-                        <i className="fas fa-arrow-down text-warning mr-3" />{" "}
-                        36,49%
-                      </td>
-                    </tr>
-                    <tr>
-                      <th scope="row">/argon/tables.html</th>
-                      <td>2,050</td>
-                      <td>147</td>
-                      <td>
-                        <i className="fas fa-arrow-up text-success mr-3" />{" "}
-                        50,87%
-                      </td>
-                    </tr>
-                    <tr>
-                      <th scope="row">/argon/profile.html</th>
-                      <td>1,795</td>
-                      <td>190</td>
-                      <td>
-                        <i className="fas fa-arrow-down text-danger mr-3" />{" "}
-                        46,53%
-                      </td>
-                    </tr>
+                    {this.renderSquadTable()}
                   </tbody>
                 </Table>
               </Card>
@@ -236,7 +244,7 @@ class Index extends React.Component {
                 <CardHeader className="border-0">
                   <Row className="align-items-center">
                     <div className="col">
-                      <h3 className="mb-0">Social traffic</h3>
+                      <h3 className="mb-0">Budgeting Ultimo Mese</h3>
                     </div>
                     <div className="col text-right">
                       <Button
@@ -245,7 +253,7 @@ class Index extends React.Component {
                         onClick={e => e.preventDefault()}
                         size="sm"
                       >
-                        See all
+                        Vedi tutto
                       </Button>
                     </div>
                   </Row>
@@ -253,88 +261,13 @@ class Index extends React.Component {
                 <Table className="align-items-center table-flush" responsive>
                   <thead className="thead-light">
                     <tr>
-                      <th scope="col">Referral</th>
-                      <th scope="col">Visitors</th>
-                      <th scope="col" />
+                      <th scope="col">Operazione</th>
+                      <th scope="col">Data</th>
+                      <th scope="col">Importo</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <th scope="row">Facebook</th>
-                      <td>1,480</td>
-                      <td>
-                        <div className="d-flex align-items-center">
-                          <span className="mr-2">60%</span>
-                          <div>
-                            <Progress
-                              max="100"
-                              value="60"
-                              barClassName="bg-gradient-danger"
-                            />
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th scope="row">Facebook</th>
-                      <td>5,480</td>
-                      <td>
-                        <div className="d-flex align-items-center">
-                          <span className="mr-2">70%</span>
-                          <div>
-                            <Progress
-                              max="100"
-                              value="70"
-                              barClassName="bg-gradient-success"
-                            />
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th scope="row">Google</th>
-                      <td>4,807</td>
-                      <td>
-                        <div className="d-flex align-items-center">
-                          <span className="mr-2">80%</span>
-                          <div>
-                            <Progress max="100" value="80" />
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th scope="row">Instagram</th>
-                      <td>3,678</td>
-                      <td>
-                        <div className="d-flex align-items-center">
-                          <span className="mr-2">75%</span>
-                          <div>
-                            <Progress
-                              max="100"
-                              value="75"
-                              barClassName="bg-gradient-info"
-                            />
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th scope="row">twitter</th>
-                      <td>2,645</td>
-                      <td>
-                        <div className="d-flex align-items-center">
-                          <span className="mr-2">30%</span>
-                          <div>
-                            <Progress
-                              max="100"
-                              value="30"
-                              barClassName="bg-gradient-warning"
-                            />
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
+                  {this.renderBudgetTable()}
                   </tbody>
                 </Table>
               </Card>

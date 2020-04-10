@@ -24,7 +24,11 @@ import AdminNavbar from "components/Navbars/AdminNavbar.js";
 import AdminFooter from "components/Footers/AdminFooter.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 
+import { API } from "aws-amplify";
+
 import routes from "routes.js";
+
+
 
 class Admin extends React.Component {
   
@@ -42,10 +46,57 @@ class Admin extends React.Component {
     super(props)
   }*/
 
+  constructor(props){
+    super(props)
+    this.state = {
+      squad: [],
+      budget: [],
+      reparto: [],
+      loaded: false
+    }
+  }
+
+  componentDidMount(){
+    console.log("COMPONENT DID MOUNT");
+    this.onLoad()
+  }
+
   componentDidUpdate(e) {
+    console.log("COMPONENT DID UPDATE");
+    //this.loadSquad();
     document.documentElement.scrollTop = 0;
     document.scrollingElement.scrollTop = 0;
-    this.refs.mainContent.scrollTop = 0;
+    this.refs.mainContent.scrollTop = 0;    
+  }
+
+  loadSquad = async () => {
+    try{
+      this.state.squad = await API.get("pathMaker","/squadriglie/scan")        
+    } catch(err){
+      alert(err);
+      console.log(err);
+    }
+    
+    console.log("SQUAD IN FUNCTION",this.state.squad);
+    console.log("LOADED IN FUNCTION",this.state.loaded);
+  }
+
+  loadBudget = async () => {
+    try{
+      this.state.budget = await API.get("pathMaker","/budget/scan")        
+    } catch(err){
+      alert(err);
+      console.log(err);
+    }
+    
+    console.log("BUDGET IN FUNCTION",this.state.budget);
+    console.log("LOADED IN FUNCTION",this.state.loaded);
+  }
+
+  onLoad = async () => {
+    await this.loadBudget();
+    await this.loadSquad();
+    this.setState({loaded: true});
   }
 
   getRoutes = routes => {
@@ -55,7 +106,9 @@ class Admin extends React.Component {
         return (
           <Route 
             path={prop.layout + prop.path}
-            render = {props => <prop.component {...this.props}/>}
+            render = {props => <prop.component 
+                                  squad = {this.state.squad}
+                                  budget = {this.state.budget} {...this.props}/>}
             key={key}
           />
         );
@@ -82,7 +135,8 @@ class Admin extends React.Component {
   
   render() {
     console.log("ADMIN PROPS", this.props);
-      return (
+    console.log("STATE",this.state);
+      return  (this.state.loaded && 
         <>
           <Sidebar
             {...this.props}

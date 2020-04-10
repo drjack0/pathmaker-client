@@ -52,10 +52,6 @@ class Profile extends React.Component {
     }
   }
 
-  componentDidUpdate(){
-    
-  }
-
   validateFormPassword = () => {
     return this.state.oldPassword.length > 0 && this.state.confirmOldPassword.length > 0
             && this.state.newPassword.length > 0 && this.state.confirmNewPassword.length > 0
@@ -158,7 +154,7 @@ class Profile extends React.Component {
                         <img
                           alt="..."
                           className="rounded-circle"
-                          src={require("assets/img/theme/team-4-800x800.jpg")}
+                          src={require("assets/img/theme/team-1-800x800.jpg")}
                         />
                       </a>
                     </div>

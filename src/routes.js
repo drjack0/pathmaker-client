@@ -51,7 +51,7 @@ var routes = [
     path: "/squadriglie",
     name: "Squadriglie",
     icon: "ni ni-atom text-violet",
-    component: Profile,
+    component: Tables,
     layout: "/admin"
   },
   {
