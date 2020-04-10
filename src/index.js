@@ -71,6 +71,8 @@ function App (props){
   const [userEmail,setUserEmail] = useState("");
   const [check, setCheck] = useState(false);
 
+  const[isAuthenticating, setIsAuthenticating] = useState(true);
+
   const [userAnnoCoca, setUserAnnoCoca] = useState("");
   const [userFormazione, setUserFormazione] = useState("");
   const [userCodiceCensimento, setUserCodiceCensimento] = useState("");
@@ -122,6 +124,7 @@ function App (props){
     } catch(err) {
       console.log("CATCHING ERROR CHECKUSER ",err)
     }
+    setIsAuthenticating(false);
   }
 
   useEffect(()=>{
@@ -145,7 +148,7 @@ function App (props){
     setUserCodiceCensimento(others['custom:codice-censimento']);
     setUserBranca(others['custom:branca']);
     setUserDescrizione(others['custom:descrizione']);
-    historyBack.go("/admin")
+    historyBack.push("/admin")
   }
 
   const handleLogout = (prop,e) => {
@@ -171,6 +174,7 @@ function App (props){
   }
 
   return(
+    !isAuthenticating && 
     <BrowserRouter>
     <Switch>
       {/*<Route path="/admin" render={props => <AdminLayout {...props} /> } />
