@@ -130,35 +130,96 @@ class Squad extends React.Component {
     }
   }
 
-  renderCardSquad = () => {
-    return this.props.squad.map((sq,i) => {
-      const {squadriglia, genere, lavoraPer} = sq;
-      const imgString = "/"+squadriglia.toLowerCase()+".jpg"
+  renderSquadMembersTable = () => {
+    return this.props.squadMembers.sort((a,b) => (a.sentiero.anno < b.sentiero.anno) ? 1 : (a.sentiero.anno === b.sentiero.anno) ? ((a.cognome < b.cognome) ? 1 : -1) : -1).map((member,i) => {
+      const {nome, cognome, censcode, mamma, papa, recapiti, sentiero, updatedAt} = member;
+
+      let colorIcons;
+      switch(sentiero.squadriglia){
+        case "Tigri":
+          colorIcons = "icon icon-shape bg-pink text-dark rounded-circle shadow mr-3";
+          break;
+        case "Squali":
+          colorIcons = "icon icon-shape bg-green text-dark rounded-circle shadow mr-3";
+          break;
+        case "Pantere":
+          colorIcons = "icon icon-shape bg-yellow text-dark rounded-circle shadow mr-3";
+          break;
+        case "Lupi":
+          colorIcons = "icon icon-shape bg-dark text-yellow rounded-circle shadow mr-3";
+          break;
+        case "Condor":
+          colorIcons = "icon icon-shape bg-blue text-white rounded-circle shadow mr-3";
+          break;
+        case "Cobra":
+          colorIcons = "icon icon-shape bg-orange text-dark rounded-circle shadow mr-3";
+          break;
+        case "Cerbiatti":
+          colorIcons = "icon icon-shape bg-pink text-dark rounded-circle shadow mr-3";
+          break;
+        case "Castori":
+          colorIcons = "icon icon-shape bg-yellow text-blue rounded-circle shadow mr-3";
+          break;
+      }
+      
+      let badge;
+      switch(sentiero.anno){
+        case "1":
+          badge = "fas fa-campground";
+          break;
+        case "2":
+          badge = "fas fa-hammer";
+          break;
+        case "3":
+          badge = "fas fa-fire-alt";
+          break;
+        case "4":
+          badge = "far fa-compass";
+          break;
+        case "5":
+          badge = "far fa-flag";
+          break;
+      }
+      const temp = new Date(updatedAt);
+      const date = temp.getDate() + "/" + (temp.getMonth()+1) + "/" + temp.getFullYear()
+
       return (
-        
-        <Col key={squadriglia} lg="6" xl="3" className="pb-2 pt-5">
-          <Link to={"/admin/squadriglia/"+ sq.squadriglia.toLowerCase()}>
-          <Card className="inner d-flex shadow mb-4 mb-xl-0 border-0">
-            <CardImg alt="..." src={require("assets/img/theme/squadriglie" + imgString)} top />
-            <CardImgOverlay className="flex-center text-center align-items-center">
-              <div>
-                <CardTitle className="d-flex align-items-center text-center h1 text-white mb-2">{squadriglia}</CardTitle>
-                <CardText className="d-flex align-items-center text-white font-weight-bold">
-                  Lavora nell'ambito di: {lavoraPer}
-                </CardText>
+        <tr key={censcode}>
+          <th scope="row">
+            <Media className="align-items-center">
+              <div className={colorIcons}>
+                <i className={badge} />
               </div>
-            </CardImgOverlay>
-          </Card>
-          </Link> 
+              <Media>
+                <span className="mb-0 text-sm">{nome + " " + cognome}</span>
+              </Media>
+            </Media>      
+          </th>
+          <td className="text-left">{censcode}</td>
+          <td className="text-left">{sentiero.incarico}</td>
+          <td className="text-left">{sentiero.lavoraPer}</td>
+          <td className="text-left">{sentiero.camminaPer}</td>
+          <td className="text-left">{date}</td>
+          <td className="text-right">
+            <UncontrolledDropdown>
+              <DropdownToggle className="btn-icon-only text-light" role="button" size="sm" color="" onClick={e => e.preventDefault}>
+                <i className="fas fa-ellipsis-v"/>
+              </DropdownToggle>
+              <DropdownMenu className="dropdown-menu-arrow" right>
+                <DropdownItem onClick={e => e.preventDefault()}>
+                  Controlla Scheda
+                </DropdownItem>
+              </DropdownMenu>
+            </UncontrolledDropdown>
+          </td>
           
-                   
-        </Col>
+        </tr>
       )
     })
   }
 
   render() {
-    console.log(this.props.squad);
+    console.log("PROPS SQUAD ROUTE", this.props);
     const temp = new Date(this.props.squad.updatedAt);
     const date = temp.getDate() + "/" + (temp.getMonth()+1) + "/" + temp.getFullYear()
 
@@ -172,6 +233,8 @@ class Squad extends React.Component {
             <div className="header-body">
               {/* Card stats */}
               <Row>
+
+                {/* BLOCCO "LAVORA PER" */}
                 <Col lg="6" xl="4">
                   <Card className="card-stats mb-4 mb-xl-0">
                     <CardBody>
@@ -189,7 +252,7 @@ class Squad extends React.Component {
                         </div>
                         <Col className="col-auto">
                           <div className="icon icon-shape bg-danger text-white rounded-circle shadow">
-                            <i className="fas fa-chart-bar" />
+                            <i className="fas fa-briefcase" />
                           </div>
                         </Col>
                       </Row>
@@ -202,6 +265,7 @@ class Squad extends React.Component {
                     </CardBody>
                   </Card>
                 </Col>
+                {/* BLOCCO "NOTE" */}
                 <Col lg="6" xl="4">
                   <Card className="card-stats mb-4 mb-xl-0">
                     <CardBody>
@@ -219,7 +283,7 @@ class Squad extends React.Component {
                         </div>
                         <Col className="col-auto">
                           <div className="icon icon-shape bg-warning text-white rounded-circle shadow">
-                            <i className="fas fa-chart-pie" />
+                            <i className="far fa-sticky-note" />
                           </div>
                         </Col>
                       </Row>
@@ -232,6 +296,8 @@ class Squad extends React.Component {
                     </CardBody>
                   </Card>
                 </Col>
+                
+                {/* BLOCCO "SQUADRIGLIA" */}
                 <Col lg="6" xl="4">
                   <Card className="card-stats mb-4 mb-xl-0">
                     <CardBody>
@@ -246,9 +312,11 @@ class Squad extends React.Component {
                           <span className="text-green h2 font-weight-bold mb-0">{this.props.squad.squadriglia.toUpperCase()}</span>
                         </div>
                         <Col className="col-auto">
-                          <div className="icon icon-shape bg-yellow text-white rounded-circle shadow">
-                            <i className="fas fa-users" />
-                          </div>
+                          <Media className="align-items-center">
+                            <span className="avatar avatar-xl rounded-circle">
+                              <img alt="..." src={require("assets/img/theme/squadriglie/pantere.jpg")} />
+                            </span>
+                          </Media>
                         </Col>
                       </Row>
                       <p className="mt-3 mb-0 text-muted text-sm">
@@ -258,11 +326,11 @@ class Squad extends React.Component {
                         <span style={{cursor: "pointer"}} className="text-warning mr-2" onClick={this.toggleSquadDel}>
                           Elimina
                         </span>{" "}
-                      </p>
-                      
+                      </p>                      
                     </CardBody>
                   </Card>
                 </Col>
+
               </Row>
             </div>
           </Container>
@@ -270,10 +338,41 @@ class Squad extends React.Component {
 
 
         <Container className="mt--7" fluid>
-          <Row>
-            {this.props.squad.squadriglia}
+          <Row> 
           </Row>
 
+          <Row className="mt-5">
+            <Col className="mb-5 mb-xl-0" xl="12">
+              <Card className="shadow">
+                <CardHeader className="border-0">
+                  <Row className="align-items-center">
+                    <div className="col">
+                      <h3 className="mb-0">Membri Squadriglia</h3>
+                    </div>
+                  </Row>
+                </CardHeader>
+                <Table hover className="align-items-center table-flush" responsive>
+                  <thead className="thead-light">
+                    <tr>
+                      <th scope="col">Persona</th>
+                      <th scope="col">Codice Censimento</th>
+                      <th scope="col">Incarico</th>
+                      <th scope="col">Lavora Per</th>
+                      <th scope="col">Cammina per</th>
+                      <th scope="col">Ultimo Aggiornamento</th>
+                      <th scope="col"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                        {this.renderSquadMembersTable()}
+                  </tbody>
+                </Table>
+              </Card>
+            </Col>
+          </Row>
+
+
+          {/*UPDATE SQUAD MODAL*/}
           <Modal isOpen={this.state.modalSquadMod} toggle={e => this.toggleSquadMod} className="modal-dialog modal-danger modal-dialog-centered modal-">
             <div className="modal-content bg-gradient-danger">
               <ModalHeader toggle={this.toggleSquadMod} />
@@ -327,6 +426,7 @@ class Squad extends React.Component {
             </div>         
           </Modal>
 
+          {/*DELETE SQUAD MODAL*/}
           <Modal isOpen={this.state.modalSquadDel} toggle={e => this.toggleSquadDel} className="modal-dialog modal-danger modal-dialog-centered modal-">
             <div className="modal-content bg-gradient-danger">
               <ModalHeader toggle={this.toggleSquadDel} />

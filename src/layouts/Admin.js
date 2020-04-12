@@ -86,10 +86,33 @@ class Admin extends React.Component {
     }  
   }
 
+  loadRagazzi = async () => {
+    try{
+      this.state.reparto = await API.get("pathMaker","/reparto/scan")
+    } catch(err){
+      alert(err);
+      console.log(err);
+    }
+  }
+
   onLoad = async () => {
     await this.loadBudget();
     await this.loadSquad();
+    await this.loadRagazzi();
     this.setState({loaded: true});
+  }
+
+  filterBySquad = (squadNome) => {
+    const repartoList = this.state.reparto;
+    console.log(repartoList);
+    const filteredList = [];
+    repartoList.map(member =>{
+      if(member.sentiero.squadriglia !== undefined && member.sentiero.squadriglia === squadNome){
+        filteredList.push(member);
+      }
+    });
+    console.log(filteredList);
+    return filteredList;
   }
 
   getRoutes = routes => {
@@ -116,7 +139,7 @@ class Admin extends React.Component {
       return (
         <Route
           path={"/admin/squadriglia/"+sq.squadriglia.toLowerCase()}
-          render = {props => <Squad squad= {sq} {...this.props}/> } key={key} />
+          render = {props => <Squad squad= {sq} squadMembers={this.filterBySquad(sq.squadriglia)} {...this.props}/> } key={key} />
       )
     })
   }

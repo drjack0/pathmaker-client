@@ -158,7 +158,8 @@ class Squadriglie extends React.Component {
               </a>              
             </Col>
           </Row>
-
+          
+          {/*ADD SQUAD MODAL*/}
           <Modal isOpen={this.state.modalAddSquad} toggle={e => this.toggleAddSquad} className="modal-dialog modal-danger modal-dialog-centered modal-">
             <div className="modal-content bg-gradient-danger">
               <ModalHeader toggle={this.toggleAddSquad} />
@@ -169,8 +170,6 @@ class Squadriglie extends React.Component {
                   <h4 className="heading mt-4">Squadriglia</h4>
                   <p>Aggiungi una squadriglia al Reparto</p>
                 </div>
-                  
-
                 <FormGroup controlid="nomeSquad" className="mb-3 mx-6">
                       <InputGroup className="input-group-alternative">
                         <InputGroupAddon addonType="prepend">

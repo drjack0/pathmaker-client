@@ -30,11 +30,24 @@ import {
   Input,
   Container,
   Row,
-  Col
+  Col,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  InputGroup,
+  InputGroupAddon,
+  InputGroupText,
+  InputGroupButtonDropdown,
+  DropdownMenu,
+  DropdownToggle,
+  DropdownItem,
 } from "reactstrap";
 // core components
 import UserHeader from "components/Headers/UserHeader.js";
-import { Auth } from "aws-amplify";
+import { Auth, API } from "aws-amplify";
+import ReactDatetimeClass from "react-datetime";
+import ReactDatetime from "react-datetime";
 
 class Profile extends React.Component {
   constructor(props){
@@ -48,8 +61,36 @@ class Profile extends React.Component {
       nomeMod: "",
       cognomeMod: "",
 
-      descrizioneMod: ""
+      descrizioneMod: "",
+
+      addEgModal: false,
+
+      
+      censcodeEG:  "",
+      nomeEG:  "",
+      cognomeEG:  "",
+
+      cellMammaEG: "",
+      mailMammaEG: "",
+      nomeMammaEG: "",
+      
+      cellPapaEG: "",
+      mailPapaEG: "",
+      nomePapaEG: "",
+      
+      casaEG: "",
+      cellulareEG: "",
+      indirizzoEG: "",
+      nascitaEG: "",
+        
+      annoEG: "",
+      camminaPerEG: "",
+      incaricoEG: "",
+      lavoraPerEG: "",
+      noteSentieroEG: "",
+      squadrigliaEG: ""
     }
+    
   }
 
   validateFormPassword = () => {
@@ -137,6 +178,53 @@ class Profile extends React.Component {
       console.log("AUTH INFO ERROR",err);
     }
   }
+
+  toggleAddEgModal = () => {
+    this.setState({addEgModal: !this.state.addEgModal})
+  }
+
+  handleAddUserSubmit = async (event) => {
+    const content= {
+      censcode: this.state.censcodeEG,
+      nome: this.state.nomeEG,
+      cognome: this.state.cognomeEG,
+      mamma: {
+        nomeMamma: this.state.nomeMammaEG,
+        cellMamma: this.state.cellMammaEG,
+        mailMamma: this.state.mailMammaEG
+      },
+      papa: {
+        nomePapa: this.state.nomePapaEG,
+        cellPapa: this.state.cellPapaEG,
+        mailPapa: this.state.mailPapaEG
+      },
+      recapiti: {
+        casa: this.state.casaEG,
+        cellulare: this.state.cellulareEG,
+        indirizzo: this.state.indirizzoEG,
+        nascita: this.state.nascitaEG
+      },
+      sentiero: {
+        anno: this.state.annoEG,
+        camminaPer: this.state.camminaPerEG,
+        incarico: this.state.incaricoEG,
+        lavoraPer: this.state.lavoraPerEG,
+        noteSentiero: this.state.noteSentieroEG,
+        squadriglia: this.state.squadrigliaEG
+      }
+    }
+    event.preventDefault();
+    try{
+      const response = API.post("pathMaker", "/reparto", {
+        body: content
+      });
+      console.log(response)
+      this.props.history.go("admin/user-profile");
+    } catch(err){
+      alert(err);
+      console.log(err);
+    }
+  }
  
   render() {
     return (
@@ -210,9 +298,23 @@ class Profile extends React.Component {
                       Reparto Rm 19
                     </div>
                   </div>
+
+                  <hr/>
+
+                  <Row>
+                    <Col>
+                      <div className="card-profile-stats d-flex justify-content-center">
+                        <Button type="button" color="success" size="lg" outline className="btn mb-3 mr-3" onClick={this.toggleAddEgModal}>Aggiungi EG</Button>
+                        <Button type="button" color="warning" size="lg" outline className="btn mb-3 ml-3" >Conferma Utente</Button>
+                      </div>
+                    </Col>
+                  </Row>
                 </CardBody>
+                
               </Card>
             </Col>
+
+            
 
             
             <Col className="order-xl-1" xl="8">
@@ -416,6 +518,281 @@ class Profile extends React.Component {
               </Card>
             </Col>
           </Row>
+
+          <Modal isOpen={this.state.addEgModal} toggle={e => this.toggleAddEgModal} className="modal-dialog modal-danger modal-dialog-centered modal-">
+            <div className="modal-content bg-gradient-danger">
+              <ModalHeader toggle={this.toggleAddEgModal} />
+              <Form role="form" onSubmit={this.handleAddUserSubmit}>
+              <ModalBody>
+                <div className="py-3 text-center">
+                  <i className="ni ni-building ni-3x"></i>
+                  <h4 className="heading mt-4">Crea un nuovo EG</h4>
+                  <p>Inserisci i dati dell'EG che vuoi registrare</p>
+                </div>
+
+                <hr className="mt-1"/>
+
+                <p className="text-center">Dati principali</p>
+                <FormGroup controlid="censcode" className="mb-3">
+                      <InputGroup className="input-group-alternative">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="ni ni-credit-card" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <Input placeholder="Codice Censimento" type="text" required onChange={e => this.setState({censcodeEG: e.target.value})}/>
+                      </InputGroup>
+                    </FormGroup>
+                    <Row>
+                  <Col md="6">
+                  <FormGroup controlid="nomeEg" /*className="mb-3 mx-6"*/>
+                      <InputGroup className="input-group-alternative">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="ni ni-shop" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <Input placeholder="Nome EG" required type="text" onChange={e => this.setState({nomeEG: e.target.value})}/>
+                      </InputGroup>
+                    </FormGroup>
+                  </Col>
+                  <Col md="6">
+                  <FormGroup controlid="cognomeEg" /*className="mb-3 mx-6"*/>
+                      <InputGroup className="input-group-alternative">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="ni ni-money-coins" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <Input placeholder="Cognome EG" required type="text" onChange={e => this.setState({cognomeEG: e.target.value})}/>
+                      </InputGroup>
+                    </FormGroup>
+                  </Col>
+                </Row>
+
+                    <p className="text-center">Recapiti</p>
+
+                <Row>
+                  <Col md="6">
+                  <FormGroup controlid="casa" /*className="mb-3 mx-6"*/>
+                      <InputGroup className="input-group-alternative">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="ni ni-shop" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <Input placeholder="Numero Casa" type="text" onChange={e => this.setState({casaEG: e.target.value})}/>
+                      </InputGroup>
+                    </FormGroup>
+                  </Col>
+                  <Col md="6">
+                  <FormGroup controlid="cellulare" /*className="mb-3 mx-6"*/>
+                      <InputGroup className="input-group-alternative">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="ni ni-money-coins" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <Input placeholder="Cellulare" type="text" onChange={e => this.setState({cellualreEG: e.target.value})}/>
+                      </InputGroup>
+                    </FormGroup>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col md="6">
+                  <FormGroup controlid="indirizzo" /*className="mb-3 mx-6"*/>
+                      <InputGroup className="input-group-alternative">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="ni ni-shop" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <Input placeholder="Indirizzo" type="text" onChange={e => this.setState({indirizzoEG: e.target.value})}/>
+                      </InputGroup>
+                    </FormGroup>
+                  </Col>
+                  <Col md="6">
+                  <FormGroup controlid="nascita" /*className="mb-3 mx-6"*/>
+                      <InputGroup className="input-group-alternative">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="ni ni-money-coins" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <Input placeholder="Data di Nascita" type="date" onChange={e => this.setState({nascitaEG: e.target.value})}/>
+                      </InputGroup>
+                    </FormGroup>
+                  </Col>
+                </Row>
+
+                <p className="text-center">Sentiero</p>
+
+                <Row>
+                  <Col md="6">
+                  <FormGroup controlid="squadriglia" /*className="mb-3 mx-6"*/>
+                      <InputGroup className="input-group-alternative">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="ni ni-shop" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <Input placeholder="Squadriglia" type="text" onChange={e => this.setState({squadrigliaEG: e.target.value})}/>
+                      </InputGroup>
+                    </FormGroup>
+                  </Col>
+                  <Col md="6">
+                  <FormGroup controlid="anno" /*className="mb-3 mx-6"*/>
+                      <InputGroup className="input-group-alternative">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="ni ni-money-coins" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <Input placeholder="Anno" type="text" onChange={e => this.setState({annoEG: e.target.value})}/>
+                      </InputGroup>
+                    </FormGroup>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col md="6">
+                  <FormGroup controlid="camminaPer" /*className="mb-3 mx-6"*/>
+                      <InputGroup className="input-group-alternative">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="ni ni-shop" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <Input placeholder="Cammina Per..." type="text" onChange={e => this.setState({camminaPerEG: e.target.value})}/>
+                      </InputGroup>
+                    </FormGroup>
+                  </Col>
+                  <Col md="6">
+                  <FormGroup controlid="lavoraPer" /*className="mb-3 mx-6"*/>
+                      <InputGroup className="input-group-alternative">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="ni ni-money-coins" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <Input placeholder="Lavora Per..." type="text" onChange={e => this.setState({lavoraPerEG: e.target.value})}/>
+                      </InputGroup>
+                    </FormGroup>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col md="6">
+                  <FormGroup controlid="incarico" /*className="mb-3 mx-6"*/>
+                      <InputGroup className="input-group-alternative">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="ni ni-shop" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <Input placeholder="Incarico" type="text" onChange={e => this.setState({incaricoEG: e.target.value})}/>
+                      </InputGroup>
+                    </FormGroup>
+                  </Col>
+                  <Col md="6">
+                  <FormGroup controlid="noteSentiero" /*className="mb-3 mx-6"*/>
+                      <InputGroup className="input-group-alternative">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="ni ni-money-coins" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <Input placeholder="Note Sentiero" type="text" onChange={e => this.setState({noteSentieroEG: e.target.value})}/>
+                      </InputGroup>
+                    </FormGroup>
+                  </Col>
+                </Row>
+
+                <p className="text-center">Mamma</p>
+
+                <Row>
+                  <Col md="6">
+                  <FormGroup controlid="nomeMamma" /*className="mb-3 mx-6"*/>
+                      <InputGroup className="input-group-alternative">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="ni ni-shop" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <Input placeholder="Nome Mamma" type="text" onChange={e => this.setState({nomeMammaEG: e.target.value})}/>
+                      </InputGroup>
+                    </FormGroup>
+                  </Col>
+                  <Col md="6">
+                  <FormGroup controlid="cellMamma" /*className="mb-3 mx-6"*/>
+                      <InputGroup className="input-group-alternative">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="ni ni-money-coins" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <Input placeholder="Cellulare Mamma" onChange={e => this.setState({cellMammaEG: e.target.value})}/>
+                      </InputGroup>
+                    </FormGroup>
+                  </Col>
+                </Row>
+                <FormGroup controlid="mailMamma" className="mb-3">
+                      <InputGroup className="input-group-alternative">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="ni ni-credit-card" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <Input placeholder="Mail Mamma" type="email" onChange={e => this.setState({mailMammaEG: e.target.value})}/>
+                      </InputGroup>
+                    </FormGroup>
+
+                <p className="text-center">Papa</p>
+
+                <Row>
+                  <Col md="6">
+                  <FormGroup controlid="nomePapa" /*className="mb-3 mx-6"*/>
+                      <InputGroup className="input-group-alternative">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="ni ni-shop" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <Input placeholder="Nome Papà" type="text" onChange={e => this.setState({nomePapaEG: e.target.value})}/>
+                      </InputGroup>
+                    </FormGroup>
+                  </Col>
+                  <Col md="6">
+                  <FormGroup controlid="cellPapa" /*className="mb-3 mx-6"*/>
+                      <InputGroup className="input-group-alternative">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="ni ni-money-coins" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <Input placeholder="Cellulare Papà" type="text" onChange={e => this.setState({cellPapaEG: e.target.value})}/>
+                      </InputGroup>
+                    </FormGroup>
+                  </Col>
+                </Row>
+                <FormGroup controlid="mailPapa" className="mb-3">
+                      <InputGroup className="input-group-alternative">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="ni ni-credit-card" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <Input placeholder="Mail Papà" type="email" onChange={e => this.setState({mailPapaEG: e.target.value})}/>
+                      </InputGroup>
+                    </FormGroup>
+                          
+              </ModalBody>
+              <ModalFooter>
+                <Button className="btn btn-white" type="submit" /*disabled={!this.validateBudgetForm()}*/>Aggiungi</Button>
+                <Button className="btn btn-link text-white ml-auto" onClick={this.toggleAddEgModal}>Indietro</Button>
+              </ModalFooter>
+              </Form> 
+            </div>         
+          </Modal>
+
         </Container>
       </>
     );
