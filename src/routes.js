@@ -21,6 +21,7 @@ import Profile from "views/examples/Profile.js";
 import Register from "views/examples/Register.js";
 import Login from "views/examples/Login.js";
 import Tables from "views/examples/Tables.js";
+import Squadriglie from "views/examples/Squadriglie.js";
 import Icons from "views/examples/Icons.js";
 import ForgotPassword from "views/examples/ForgotPassword.js"
 import ConfirmRegistration from "views/examples/ConfirmRegistration.js"
@@ -50,44 +51,46 @@ var routes = [
   {
     path: "/squadriglie",
     name: "Squadriglie",
-    icon: "ni ni-atom text-violet",
-    component: Tables,
+    icon: "ni ni-atom text-red",
+    component: Squadriglie,
     layout: "/admin"
   },
-  {
+  /*{
     path: "/tasks",
     name: "Tasks",
     icon: "ni ni-bullet-list-67 text-red",
     component: Tables,
     layout: "/admin"
-  },
+  },*/
+
+  //SIDEBAR AND NAVBAR DISABLED ROUTES (WHEN LOGGED IN)
   {
     path: "/login",
     name: "Login",
     icon: "ni ni-key-25 text-info",
     component: Login,
-    layout: "/auth" //DA DISABILITARE/NASCONDERE QUANDO LOGGATI
+    layout: "/auth"
   },
   {
     path: "/register",
     name: "Register",
     icon: "ni ni-circle-08 text-pink",
     component: Register,
-    layout: "/auth" //DA DISABILITARE/NASCONDERE QUANDO LOGGATI
+    layout: "/auth" 
   },
   {
     path: "/forgot_password",
     name: "Forgot Password",
     icon: "ni ni-circle-08 text-pink",
     component: ForgotPassword,
-    layout: "/auth" //DA DISABILITARE/NASCONDERE QUANDO LOGGATI
+    layout: "/auth" 
   },
   {
     path: "/confirm_registration",
     name: "Confirm Registration",
     icon: "ni ni-circle-08 text-pink",
     component: ConfirmRegistration,
-    layout: "/auth" //DA DISABILITARE/NASCONDERE QUANDO LOGGATI
+    layout: "/auth"
   }
 ];
 export default routes;

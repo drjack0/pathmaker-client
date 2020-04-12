@@ -20,6 +20,8 @@ import React from "react";
 import classnames from "classnames";
 // javascipt plugin for creating charts
 import Chart from "chart.js";
+
+import {API} from "aws-amplify"
 // react plugin used to create charts
 import { Line, Bar } from "react-chartjs-2";
 // reactstrap components
@@ -36,7 +38,20 @@ import {
   Container,
   Row,
   Col,
-  Modal
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Input,
+  FormGroup,
+  InputGroup,
+  InputGroupAddon,
+  InputGroupText,
+  Form,
+  InputGroupButtonDropdown,
+  DropdownMenu,
+  DropdownToggle,
+  DropdownItem,
 } from "reactstrap";
 
 // core components
@@ -54,7 +69,16 @@ class Index extends React.Component {
     super(props);
     this.state = {
       activeNav: 1,
-      chartExample1Data: "data1"
+      chartExample1Data: "data1",
+      squadList: this.props.squad,
+      backupSquadList: this.props.squad,
+      dropdownOpen: false,
+      squadFilterType: "squadriglia",
+      modalAddBudget: false,
+
+      budgetAmount: "",
+      budgetType: "",
+      budgetOp: ""
     };
     if (window.Chart) {
       parseOptions(Chart, chartOptions());
@@ -70,8 +94,14 @@ class Index extends React.Component {
     });
   };
 
+  //SQUAD FUNCTION SECTION
+
+  toggleDropDown = () => {
+    this.setState({dropdownOpen: !this.state.dropdownOpen})
+  }
+
   renderSquadTable = () => {
-    return this.props.squad.map((sq,i) => {
+    return this.state.backupSquadList.map((sq,i) => {
       const {squadriglia, genere, lavoraPer} = sq;
       return (
         <tr key={squadriglia}>
@@ -86,6 +116,17 @@ class Index extends React.Component {
       )
     })
   }
+
+  filterSquadList =(event) => {
+    var updatedList = this.state.squadList;
+    const filterType = this.state.squadFilterType.toString();
+    updatedList = updatedList.filter(function(list){
+      return (list[filterType].toLowerCase().search(event.target.value.toLowerCase()) !== -1);
+    });
+    this.setState({backupSquadList: updatedList});
+  };
+
+  //BUDGET FUNCTION SECTION
 
   renderBudgetTable = () => {
     return this.props.budget.map((bud,i) => {
@@ -103,11 +144,11 @@ class Index extends React.Component {
             </td>
           </tr>
         )
-      } else if(typeOp === "-" && temp.getMonth() == new Date(Date.now()).getMonth()) {
+      } else if(typeOp === "-" && temp.getMonth() == new Date(Date.now()).getMonth()){
         return (
           <tr key={cashId}>
             <th scope="row">{nomeOp}</th>
-            <td>{updatedAt}</td>
+            <td>{date}</td>
             <td>
               <i className="fas fa-minus text-warning mr-3" />{amount}
             </td>
@@ -115,6 +156,42 @@ class Index extends React.Component {
         )
       }      
     })
+  }
+
+  validateBudgetForm = () => {
+    return this.state.budgetAmount.length > 0 && this.state.budgetType.length > 0
+            && this.state.budgetOp.length > 0
+  }
+
+  toggleAddBudget = () => {
+    this.setState({modalAddBudget: !this.state.modalAddBudget})
+  }
+
+  handleBudgetSubmit = async (event) => {
+    event.preventDefault();
+    console.log(this.state.budgetAmount, this.state.budgetOp, this.state.budgetType);
+
+    let typeOp;
+    if(this.state.budgetType === "Entrata"){
+      typeOp = "+"
+    } else {
+      typeOp = "-"
+    }
+
+    try{
+      const response = await API.post("pathMaker", "/budget", {
+        body: {
+          nomeOp: this.state.budgetOp,
+          typeOp: typeOp,
+          amount: this.state.budgetAmount
+        }
+      });
+      console.log(response);
+      this.props.history.go("/admin/index")
+    } catch(err){
+      alert(err);
+      console.log(err);
+    }
   }
 
   render() {
@@ -127,82 +204,6 @@ class Index extends React.Component {
         {/* Page content */}
         <Container className="mt--7" fluid>
           <Row>
-            <Col className="mb-5 mb-xl-0" xl="8">
-              <Card className="bg-gradient-default shadow">
-                <CardHeader className="bg-transparent">
-                  <Row className="align-items-center">
-                    <div className="col">
-                      <h6 className="text-uppercase text-light ls-1 mb-1">
-                        Overview
-                      </h6>
-                      <h2 className="text-white mb-0">Sales value</h2>
-                    </div>
-                    <div className="col">
-                      <Nav className="justify-content-end" pills>
-                        <NavItem>
-                          <NavLink
-                            className={classnames("py-2 px-3", {
-                              active: this.state.activeNav === 1
-                            })}
-                            href="#pablo"
-                            onClick={e => this.toggleNavs(e, 1)}
-                          >
-                            <span className="d-none d-md-block">Month</span>
-                            <span className="d-md-none">M</span>
-                          </NavLink>
-                        </NavItem>
-                        <NavItem>
-                          <NavLink
-                            className={classnames("py-2 px-3", {
-                              active: this.state.activeNav === 2
-                            })}
-                            data-toggle="tab"
-                            href="#pablo"
-                            onClick={e => this.toggleNavs(e, 2)}
-                          >
-                            <span className="d-none d-md-block">Week</span>
-                            <span className="d-md-none">W</span>
-                          </NavLink>
-                        </NavItem>
-                      </Nav>
-                    </div>
-                  </Row>
-                </CardHeader>
-                <CardBody>
-                  {/* Chart */}
-                  <div className="chart">
-                    <Line
-                      data={chartExample1[this.state.chartExample1Data]}
-                      options={chartExample1.options}
-                      getDatasetAtEvent={e => console.log(e)}
-                    />
-                  </div>
-                </CardBody>
-              </Card>
-            </Col>
-            <Col xl="4">
-              <Card className="shadow">
-                <CardHeader className="bg-transparent">
-                  <Row className="align-items-center">
-                    <div className="col">
-                      <h6 className="text-uppercase text-muted ls-1 mb-1">
-                        Performance
-                      </h6>
-                      <h2 className="mb-0">Total orders</h2>
-                    </div>
-                  </Row>
-                </CardHeader>
-                <CardBody>
-                  {/* Chart */}
-                  <div className="chart">
-                    <Bar
-                      data={chartExample2.data}
-                      options={chartExample2.options}
-                    />
-                  </div>
-                </CardBody>
-              </Card>
-            </Col>
           </Row>
           <Row className="mt-5">
             <Col className="mb-5 mb-xl-0" xl="8">
@@ -212,19 +213,27 @@ class Index extends React.Component {
                     <div className="col">
                       <h3 className="mb-0">Squadriglie</h3>
                     </div>
-                    <div className="col text-right">
-                      <Button
-                        color="primary"
-                        href="#pablo"
-                        onClick={e => e.preventDefault()}
-                        size="sm"
-                      >
-                        Vedi tutto
-                      </Button>
+                    <div className="col md-4 text-right">
+                      <InputGroup className="mb-1">
+                      <Input type="text" placeholder={"Filtra: " + this.state.squadFilterType} className="mb-0" onChange={this.filterSquadList} />
+                        <InputGroupButtonDropdown className="mb-1" addonType="append" isOpen={this.state.dropdownOpen} toggle={this.toggleDropDown}>
+                          <InputGroupText style={{paddingTop: "0.03rem",paddingRight:"0.04rem",paddingBottom: "0.03rem",paddingLeft:"0.04rem"}}>
+                          <DropdownToggle outline color="primary" >
+                            <i className="ni ni-zoom-split-in" />
+                          </DropdownToggle>
+                          <DropdownMenu >
+                            <DropdownItem header style={{color: "blue"}} >Seleziona Filtro</DropdownItem>
+                            <DropdownItem divider />
+                            <DropdownItem onClick={e => this.setState({squadFilterType: "squadriglia"})}>Squadriglia</DropdownItem>
+                            <DropdownItem onClick={e => this.setState({squadFilterType: "lavoraPer"})}>Lavora Per</DropdownItem>
+                          </DropdownMenu>
+                          </InputGroupText>                                                
+                        </InputGroupButtonDropdown>                                                
+                      </InputGroup>
                     </div>
                   </Row>
                 </CardHeader>
-                <Table className="align-items-center table-flush" responsive>
+                <Table hover className="align-items-center table-flush" responsive>
                   <thead className="thead-light">
                     <tr>
                       <th scope="col">Squadriglia</th>
@@ -249,11 +258,10 @@ class Index extends React.Component {
                     <div className="col text-right">
                       <Button
                         color="primary"
-                        href="#pablo"
-                        onClick={e => e.preventDefault()}
+                        onClick={e => this.toggleAddBudget()}
                         size="sm"
                       >
-                        Vedi tutto
+                        Add
                       </Button>
                     </div>
                   </Row>
@@ -273,6 +281,59 @@ class Index extends React.Component {
               </Card>
             </Col>
           </Row>
+
+          <Modal isOpen={this.state.modalAddBudget} toggle={e => this.toggleAddBudget} className="modal-dialog modal-danger modal-dialog-centered modal-">
+            <div className="modal-content bg-gradient-danger">
+              <ModalHeader toggle={this.toggleAddBudget} />
+              <Form role="form" onSubmit={this.handleBudgetSubmit}>
+              <ModalBody>
+                <div className="py-3 text-center">
+                  <i className="ni ni-building ni-3x"></i>
+                  <h4 className="heading mt-4">Budgeting</h4>
+                  <p>Inserisci i dati dell'operazione che vuoi registrare</p>
+                </div>
+                  
+                    <FormGroup controlid="budgetOp" className="mb-3 mx-6">
+                      <InputGroup className="input-group-alternative">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="ni ni-shop" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <Input placeholder="Operazione" type="text" onChange={e => this.setState({budgetOp: e.target.value})}/>
+                      </InputGroup>
+                    </FormGroup>
+                    <FormGroup controlid="budgetAmount" className="mb-3 mx-6">
+                      <InputGroup className="input-group-alternative">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="ni ni-money-coins" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <Input placeholder="Importo" type="number" min="0" onChange={e => this.setState({budgetAmount: e.target.value})}/>
+                      </InputGroup>
+                    </FormGroup>
+                    <FormGroup controlid="budgetType" className="mb-3 mx-6">
+                      <InputGroup className="input-group-alternative">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="ni ni-credit-card" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <Input placeholder="Tipo" type="select" required onChange={e => this.setState({budgetType: e.target.value})}>
+                          <option>Entrata</option>
+                          <option>Uscita</option>
+                        </Input>
+                      </InputGroup>
+                    </FormGroup>                    
+              </ModalBody>
+              <ModalFooter>
+                <Button className="btn btn-white" type="submit" disabled={!this.validateBudgetForm()}>Aggiungi</Button>
+                <Button className="btn btn-link text-white ml-auto" /*color="secondary"*/ onClick={this.toggleAddBudget}>Indietro</Button>
+              </ModalFooter>
+              </Form> 
+            </div>         
+          </Modal>
         </Container>
       </>
     );

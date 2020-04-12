@@ -63,10 +63,9 @@ class Admin extends React.Component {
 
   componentDidUpdate(e) {
     console.log("COMPONENT DID UPDATE");
-    //this.loadSquad();
     document.documentElement.scrollTop = 0;
     document.scrollingElement.scrollTop = 0;
-    this.refs.mainContent.scrollTop = 0;    
+    (this.refs.mainPanel || {}).scrollTop = 0;
   }
 
   loadSquad = async () => {
@@ -75,10 +74,7 @@ class Admin extends React.Component {
     } catch(err){
       alert(err);
       console.log(err);
-    }
-    
-    console.log("SQUAD IN FUNCTION",this.state.squad);
-    console.log("LOADED IN FUNCTION",this.state.loaded);
+    } 
   }
 
   loadBudget = async () => {
@@ -87,10 +83,7 @@ class Admin extends React.Component {
     } catch(err){
       alert(err);
       console.log(err);
-    }
-    
-    console.log("BUDGET IN FUNCTION",this.state.budget);
-    console.log("LOADED IN FUNCTION",this.state.loaded);
+    }  
   }
 
   onLoad = async () => {

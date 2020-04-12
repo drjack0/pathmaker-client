@@ -139,6 +139,7 @@ function App (props){
     console.log("HandleLoginApp");
     console.log("DATA FROM LOGIN PAGE",email,cognome,nome);
     setCheck(true);
+    setIsAuthenticating(false);
     setUserNome(nome);
     setUserCognome(cognome);
     setUserEmail(email);
@@ -147,7 +148,7 @@ function App (props){
     setUserCodiceCensimento(others['custom:codice-censimento']);
     setUserBranca(others['custom:branca']);
     setUserDescrizione(others['custom:descrizione']);
-    historyBack.push("/admin")
+    historyBack.go("/admin")
   }
 
   const handleLogout = (prop,e) => {
@@ -158,6 +159,7 @@ function App (props){
         .then(data => {
           console.log(data)
           setCheck(false);
+          setIsAuthenticating(true);
           setUserNome("");
           setUserCognome("");
           setUserEmail("");
