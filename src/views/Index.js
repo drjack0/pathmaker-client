@@ -110,7 +110,7 @@ class Index extends React.Component {
           <td>{lavoraPer}</td>
           <td>
             <i className="fas fa-location-arrow text-success mr-3" />
-            <a href={"/squadriglia/"+squadriglia}> Scopri </a>
+            <a href={"/squadriglie/"+squadriglia.toLowerCase()}> Scopri </a>
           </td>
         </tr>
       )

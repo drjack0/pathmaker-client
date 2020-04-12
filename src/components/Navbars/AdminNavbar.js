@@ -35,23 +35,10 @@ import {
   Media
 } from "reactstrap";
 
-/*async function handleLogout(){
-  await Auth.signOut();
-  userHasAuthenticated(false);
-  props.history.push("/auth/login");
-}*/
+
 
 
 class AdminNavbar extends React.Component {
-  
-  /*componentWillMount(){
-    checkUser();
-  }
-  componentDidUpdate(){
-    checkUser();
-  }*/
-  
-
   render() {   
     return (
       <>

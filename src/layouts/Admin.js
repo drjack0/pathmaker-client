@@ -28,7 +28,7 @@ import { API } from "aws-amplify";
 
 import routes from "routes.js";
 
-
+import Squad from "views/examples/Squad.js"
 
 class Admin extends React.Component {
   
@@ -95,7 +95,7 @@ class Admin extends React.Component {
   getRoutes = routes => {
     console.log("PROPS IN GETROUTES",this.props);
     return routes.map((prop, key) => {
-      if (prop.layout === "/admin") {
+      if (prop.layout === "/admin" && prop.path !== '/squadriglia' && prop.path !== '/eg') {
         return (
           <Route 
             path={prop.layout + prop.path}
@@ -111,6 +111,26 @@ class Admin extends React.Component {
     });
   };
 
+  getSquadRoutes = () => {
+    return this.state.squad.map((sq,key) => {
+      return (
+        <Route
+          path={"/admin/squadriglia/"+sq.squadriglia.toLowerCase()}
+          render = {props => <Squad squad= {sq} {...this.props}/> } key={key} />
+      )
+    })
+  }
+
+  getEgRoutes = () => {
+    return this.state.reparto.map((eg,key) => {
+      return (
+        <Route
+          path={"/admin/eg/"+eg.censcode}
+          render = {props => <Squad eg= {eg} {...this.props}/> } key={key} />
+      )
+    })
+  }
+
   getBrandText = path => {
     for (let i = 0; i < routes.length; i++) {
       if (
@@ -121,7 +141,7 @@ class Admin extends React.Component {
         return routes[i].name;
       }
     }
-    return "Brand";
+    return this.props.location.pathname.split("/")[2];
   };
 
   
@@ -147,6 +167,7 @@ class Admin extends React.Component {
             />
             <Switch>
               {this.getRoutes(routes)}
+              {this.getSquadRoutes()}
               <Redirect from="*" to="/admin/index" />
             </Switch>
             <Container fluid>
