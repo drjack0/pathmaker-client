@@ -67,10 +67,20 @@ class Squad extends React.Component {
     super(props);
     this.state = {
       modalSquadMod: false,
+      modalSquadDel: false,
+      delConfirm: "",
       lavoraPer: "",
       note: "",
       genere: ""
     }
+  }
+
+  validateDelForm = () => {
+    return this.state.delConfirm === "delete";
+  }
+
+  toggleSquadDel = () => {
+    this.setState({modalSquadDel: !this.state.modalSquadDel})
   }
 
   validateSquadForm = () => {
@@ -106,6 +116,18 @@ class Squad extends React.Component {
       console.log(err);
     }
 
+  }
+
+  handleSquadDel = async (event) => {
+    event.preventDefault();
+    try{
+      const response = await API.del("pathMaker",`/squadriglie/${this.props.squad.squadriglia}`);
+      console.log(response);
+      this.props.history.go(`/admin/squadriglie`);
+    } catch(err){
+      alert(err);
+      console.log(err);
+    }
   }
 
   renderCardSquad = () => {
@@ -230,10 +252,14 @@ class Squad extends React.Component {
                         </Col>
                       </Row>
                       <p className="mt-3 mb-0 text-muted text-sm">
-                        <span style={{cursor: "pointer"}} className="text-warning mr-2" onClick={this.toggleSquadMod}>
+                        <span style={{cursor: "pointer"}} className="text-green mr-2" onClick={this.toggleSquadMod}>
                           Modifica
                         </span>{" "}
+                        <span style={{cursor: "pointer"}} className="text-warning mr-2" onClick={this.toggleSquadDel}>
+                          Elimina
+                        </span>{" "}
                       </p>
+                      
                     </CardBody>
                   </Card>
                 </Col>
@@ -295,11 +321,44 @@ class Squad extends React.Component {
               </ModalBody>
               <ModalFooter>
                 <Button className="btn btn-white" type="submit">Modifica</Button>
-                <Button className="btn btn-link text-white ml-auto" /*color="secondary"*/ onClick={this.toggleSquadMod}>Indietro</Button>
+                <Button className="btn btn-link text-white ml-auto" /*color="secondary"*/ onClick={this.toggleSquadMod}>Elimina Squadriglia</Button>
               </ModalFooter>
               </Form> 
             </div>         
           </Modal>
+
+          <Modal isOpen={this.state.modalSquadDel} toggle={e => this.toggleSquadDel} className="modal-dialog modal-danger modal-dialog-centered modal-">
+            <div className="modal-content bg-gradient-danger">
+              <ModalHeader toggle={this.toggleSquadDel} />
+              <Form role="form" onSubmit={this.handleSquadDel}>
+              <ModalBody>
+                <div className="py-3 text-center">
+                  <i className="ni ni-button-power ni-3x"></i>
+                  <h4 className="heading mt-4">Squadriglia {this.props.squad.squadriglia}</h4>
+                  <p>Sei sicuro di voler eliminare la squadriglia?</p>
+                  <p>Per confermare, inserisci qui sotto la parola "delete" e invia la richiesta!</p>
+                </div>
+                  
+                    <FormGroup controlid="lavoraPer" className="mb-3 mx-6">
+                      <InputGroup className="input-group-alternative">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="ni ni-shop" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <Input type="text" onChange={e => this.setState({delConfirm: e.target.value})}/>
+                      </InputGroup>
+                    </FormGroup>
+
+                    </ModalBody>
+              <ModalFooter>
+                <Button className="btn btn-white" type="submit" disabled={!this.validateDelForm()}>Elimina Squadriglia</Button>
+                <Button className="btn btn-link text-white ml-auto" /*color="secondary"*/ onClick={this.toggleSquadDel}>Indietro</Button>
+              </ModalFooter>
+              </Form> 
+            </div>         
+          </Modal>
+
         </Container>
       </>
     );
