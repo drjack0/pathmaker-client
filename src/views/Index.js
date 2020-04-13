@@ -51,7 +51,7 @@ import {
   InputGroupButtonDropdown,
   DropdownMenu,
   DropdownToggle,
-  DropdownItem,
+  DropdownItem
 } from "reactstrap";
 
 // core components
@@ -61,6 +61,8 @@ import {
   chartExample1,
   chartExample2
 } from "variables/charts.js";
+
+import {Link} from "react-router-dom";
 
 import Header from "components/Headers/Header.js";
 
@@ -101,7 +103,7 @@ class Index extends React.Component {
   }
 
   renderSquadTable = () => {
-    return this.state.backupSquadList.map((sq,i) => {
+    return this.state.backupSquadList.sort((a,b) => (a.squadriglia < b.squadriglia) ? 1 : -1).map((sq,i) => {
       const {squadriglia, genere, lavoraPer} = sq;
       return (
         <tr key={squadriglia}>
@@ -110,7 +112,7 @@ class Index extends React.Component {
           <td>{lavoraPer}</td>
           <td>
             <i className="fas fa-location-arrow text-success mr-3" />
-            <a href={"/squadriglie/"+squadriglia.toLowerCase()}> Scopri </a>
+            <Link to={"/admin/squadriglia/"+squadriglia.toLowerCase()}> Scopri </Link>
           </td>
         </tr>
       )
