@@ -125,7 +125,8 @@ class Admin extends React.Component {
             path={prop.layout + prop.path}
             render = {props => <prop.component 
                                   squad = {this.state.squad}
-                                  budget = {this.state.budget} {...this.props}/>}
+                                  budget = {this.state.budget}
+                                  reparto= {this.state.reparto} {...this.props}/>}
             key={key}
           />
         );
@@ -150,7 +151,7 @@ class Admin extends React.Component {
       return (
         <Route
           path={"/admin/eg/"+eg.censcode}
-          render = {props => <EG eg= {eg} {...this.props}/> } key={key} />
+          render = {props => <EG eg= {eg} squadList={this.state.squad} {...this.props}/> } key={key} />
       )
     })
   }

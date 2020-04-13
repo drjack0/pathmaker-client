@@ -200,7 +200,7 @@ class Index extends React.Component {
     
     return (
       <>
-        <Header />
+        <Header {...this.props} />
         {/* Page content */}
         <Container className="mt--7" fluid>
           <Row>

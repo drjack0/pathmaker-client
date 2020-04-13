@@ -138,7 +138,7 @@ class Squadriglie extends React.Component {
     console.log(this.props.squad);
     return (
       <>
-        <Header />
+        <Header {...this.props} />
         <Container className="mt--7" fluid>
           <Row>
             {this.renderCardSquad()}

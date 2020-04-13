@@ -525,7 +525,7 @@ class Profile extends React.Component {
               <Form role="form" onSubmit={this.handleAddUserSubmit}>
               <ModalBody>
                 <div className="py-3 text-center">
-                  <i className="ni ni-building ni-3x"></i>
+                  <i className="ni ni-badge ni-3x"></i>
                   <h4 className="heading mt-4">Crea un nuovo EG</h4>
                   <p>Inserisci i dati dell'EG che vuoi registrare</p>
                 </div>
@@ -537,7 +537,7 @@ class Profile extends React.Component {
                       <InputGroup className="input-group-alternative">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
-                            <i className="ni ni-credit-card" />
+                            <i className="ni ni-app" />
                           </InputGroupText>
                         </InputGroupAddon>
                         <Input placeholder="Codice Censimento" type="text" required onChange={e => this.setState({censcodeEG: e.target.value})}/>
@@ -549,7 +549,7 @@ class Profile extends React.Component {
                       <InputGroup className="input-group-alternative">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
-                            <i className="ni ni-shop" />
+                          <i className="fas fa-ghost" />
                           </InputGroupText>
                         </InputGroupAddon>
                         <Input placeholder="Nome EG" required type="text" onChange={e => this.setState({nomeEG: e.target.value})}/>
@@ -561,7 +561,7 @@ class Profile extends React.Component {
                       <InputGroup className="input-group-alternative">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
-                            <i className="ni ni-money-coins" />
+                          <i className="fas fa-signature" />
                           </InputGroupText>
                         </InputGroupAddon>
                         <Input placeholder="Cognome EG" required type="text" onChange={e => this.setState({cognomeEG: e.target.value})}/>
@@ -578,7 +578,7 @@ class Profile extends React.Component {
                       <InputGroup className="input-group-alternative">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
-                            <i className="ni ni-shop" />
+                          <i className="fas fa-voicemail" />
                           </InputGroupText>
                         </InputGroupAddon>
                         <Input placeholder="Numero Casa" type="text" onChange={e => this.setState({casaEG: e.target.value})}/>
@@ -590,7 +590,7 @@ class Profile extends React.Component {
                       <InputGroup className="input-group-alternative">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
-                            <i className="ni ni-money-coins" />
+                          <i className="fas fa-phone" />
                           </InputGroupText>
                         </InputGroupAddon>
                         <Input placeholder="Cellulare" type="text" onChange={e => this.setState({cellualreEG: e.target.value})}/>
@@ -604,7 +604,7 @@ class Profile extends React.Component {
                       <InputGroup className="input-group-alternative">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
-                            <i className="ni ni-shop" />
+                          <i className="fas fa-home" />
                           </InputGroupText>
                         </InputGroupAddon>
                         <Input placeholder="Indirizzo" type="text" onChange={e => this.setState({indirizzoEG: e.target.value})}/>
@@ -616,7 +616,7 @@ class Profile extends React.Component {
                       <InputGroup className="input-group-alternative">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
-                            <i className="ni ni-money-coins" />
+                          <i className="fas fa-birthday-cake" />
                           </InputGroupText>
                         </InputGroupAddon>
                         <Input placeholder="Data di Nascita" type="date" onChange={e => this.setState({nascitaEG: e.target.value})}/>
@@ -633,7 +633,7 @@ class Profile extends React.Component {
                       <InputGroup className="input-group-alternative">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
-                            <i className="ni ni-shop" />
+                          <i className="fas fa-home" />
                           </InputGroupText>
                         </InputGroupAddon>
                         <Input placeholder="Squadriglia" type="text" onChange={e => this.setState({squadrigliaEG: e.target.value})}/>
@@ -645,7 +645,7 @@ class Profile extends React.Component {
                       <InputGroup className="input-group-alternative">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
-                            <i className="ni ni-money-coins" />
+                          <i className="far fa-calendar" />
                           </InputGroupText>
                         </InputGroupAddon>
                         <Input placeholder="Anno" type="text" onChange={e => this.setState({annoEG: e.target.value})}/>
@@ -659,7 +659,7 @@ class Profile extends React.Component {
                       <InputGroup className="input-group-alternative">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
-                            <i className="ni ni-shop" />
+                          <i className="fas fa-shoe-prints" />
                           </InputGroupText>
                         </InputGroupAddon>
                         <Input placeholder="Cammina Per..." type="text" onChange={e => this.setState({camminaPerEG: e.target.value})}/>
@@ -671,7 +671,7 @@ class Profile extends React.Component {
                       <InputGroup className="input-group-alternative">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
-                            <i className="ni ni-money-coins" />
+                          <i className="fas fa-wrench" />
                           </InputGroupText>
                         </InputGroupAddon>
                         <Input placeholder="Lavora Per..." type="text" onChange={e => this.setState({lavoraPerEG: e.target.value})}/>
@@ -685,7 +685,7 @@ class Profile extends React.Component {
                       <InputGroup className="input-group-alternative">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
-                            <i className="ni ni-shop" />
+                          <i className="fas fa-briefcase" />
                           </InputGroupText>
                         </InputGroupAddon>
                         <Input placeholder="Incarico" type="text" onChange={e => this.setState({incaricoEG: e.target.value})}/>
@@ -697,7 +697,7 @@ class Profile extends React.Component {
                       <InputGroup className="input-group-alternative">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
-                            <i className="ni ni-money-coins" />
+                          <i className="far fa-sticky-note" />
                           </InputGroupText>
                         </InputGroupAddon>
                         <Input placeholder="Note Sentiero" type="text" onChange={e => this.setState({noteSentieroEG: e.target.value})}/>
@@ -714,7 +714,7 @@ class Profile extends React.Component {
                       <InputGroup className="input-group-alternative">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
-                            <i className="ni ni-shop" />
+                          <i className="fas fa-signature" />
                           </InputGroupText>
                         </InputGroupAddon>
                         <Input placeholder="Nome Mamma" type="text" onChange={e => this.setState({nomeMammaEG: e.target.value})}/>
@@ -726,7 +726,7 @@ class Profile extends React.Component {
                       <InputGroup className="input-group-alternative">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
-                            <i className="ni ni-money-coins" />
+                          <i className="fas fa-phone" />
                           </InputGroupText>
                         </InputGroupAddon>
                         <Input placeholder="Cellulare Mamma" onChange={e => this.setState({cellMammaEG: e.target.value})}/>
@@ -738,7 +738,7 @@ class Profile extends React.Component {
                       <InputGroup className="input-group-alternative">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
-                            <i className="ni ni-credit-card" />
+                          <i className="far fa-envelope" />
                           </InputGroupText>
                         </InputGroupAddon>
                         <Input placeholder="Mail Mamma" type="email" onChange={e => this.setState({mailMammaEG: e.target.value})}/>
@@ -753,7 +753,7 @@ class Profile extends React.Component {
                       <InputGroup className="input-group-alternative">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
-                            <i className="ni ni-shop" />
+                          <i className="fas fa-signature" />
                           </InputGroupText>
                         </InputGroupAddon>
                         <Input placeholder="Nome Papà" type="text" onChange={e => this.setState({nomePapaEG: e.target.value})}/>
@@ -765,7 +765,7 @@ class Profile extends React.Component {
                       <InputGroup className="input-group-alternative">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
-                            <i className="ni ni-money-coins" />
+                          <i className="fas fa-phone" />
                           </InputGroupText>
                         </InputGroupAddon>
                         <Input placeholder="Cellulare Papà" type="text" onChange={e => this.setState({cellPapaEG: e.target.value})}/>
@@ -777,7 +777,7 @@ class Profile extends React.Component {
                       <InputGroup className="input-group-alternative">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
-                            <i className="ni ni-credit-card" />
+                          <i className="far fa-envelope" />
                           </InputGroupText>
                         </InputGroupAddon>
                         <Input placeholder="Mail Papà" type="email" onChange={e => this.setState({mailPapaEG: e.target.value})}/>

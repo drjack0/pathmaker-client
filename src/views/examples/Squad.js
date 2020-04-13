@@ -390,7 +390,7 @@ class Squad extends React.Component {
                       <InputGroup className="input-group-alternative">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
-                            <i className="ni ni-shop" />
+                            <i className="ni ni-spaceship" />
                           </InputGroupText>
                         </InputGroupAddon>
                         <Input placeholder={"Lavora Per: " + this.props.squad.lavoraPer} type="text" onChange={e => this.setState({lavoraPer: e.target.value})}/>
@@ -400,7 +400,7 @@ class Squad extends React.Component {
                       <InputGroup className="input-group-alternative">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
-                            <i className="ni ni-money-coins" />
+                            <i className="ni ni-bullet-list-67" />
                           </InputGroupText>
                         </InputGroupAddon>
                         <Input placeholder={"Note: " + this.props.squad.note} type="text" onChange={e => this.setState({note: e.target.value})}/>
@@ -410,7 +410,7 @@ class Squad extends React.Component {
                       <InputGroup className="input-group-alternative">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
-                            <i className="ni ni-credit-card" />
+                            <i className="ni ni-active-40" />
                           </InputGroupText>
                         </InputGroupAddon>
                         <Input placeholder={"Genere: " + this.props.squad.genere} type="select" required onChange={e => this.setState({genere: e.target.value})}>
@@ -435,7 +435,7 @@ class Squad extends React.Component {
               <Form role="form" onSubmit={this.handleSquadDel}>
               <ModalBody>
                 <div className="py-3 text-center">
-                  <i className="ni ni-button-power ni-3x"></i>
+                  <i className="ni ni-settings-gear-65 ni-3x"></i>
                   <h4 className="heading mt-4">Squadriglia {this.props.squad.squadriglia}</h4>
                   <p>Sei sicuro di voler eliminare la squadriglia?</p>
                   <p>Per confermare, inserisci qui sotto la parola "delete" e invia la richiesta!</p>
@@ -445,7 +445,7 @@ class Squad extends React.Component {
                       <InputGroup className="input-group-alternative">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
-                            <i className="ni ni-shop" />
+                            <i className="ni ni-tag" />
                           </InputGroupText>
                         </InputGroupAddon>
                         <Input type="text" onChange={e => this.setState({delConfirm: e.target.value})}/>

@@ -21,7 +21,55 @@ import React from "react";
 import { Card, CardBody, CardTitle, Container, Row, Col } from "reactstrap";
 
 class Header extends React.Component {
+  constructor(props){
+    super(props);
+  }
+
+  getMensiliArretrati = () => {
+    const currentMonth = this.getMese().toString().toLowerCase();
+    let total = 0;   
+    console.log(this.props.reparto[2].mensili['ottobre']);
+    for(var i=0; i < this.props.reparto.length; i++){
+      total = total + (20 - parseInt(this.props.reparto[i].mensili[currentMonth]));
+    }
+    return total.toString();
+  }
+
+  getMese = () => {
+    let meseNumber = (new Date(Date.now())).getMonth() + 1;
+    let mese;
+    switch(meseNumber){
+      case 1:
+        mese = "Gennaio";
+        break;
+      case 2:
+        mese = "Febbraio";
+        break;
+      case 3:
+        mese ="Marzo";
+        break;
+      case 4:
+        mese ="Aprile";
+        break;
+      case 5:
+        mese ="Maggio";
+        break;
+      case 10:
+        mese ="Ottobre";
+        break;
+      case 11:
+        mese="Novembre";
+        break;
+      case 12:
+        mese ="Dicembre";
+        break
+    }
+    return mese;
+  }
+
+
   render() {
+    console.log("HEADERS PROPS", this.props)
     return (
       <>
         <div className="header bg-gradient-info pb-8 pt-5 pt-md-8">
@@ -38,10 +86,10 @@ class Header extends React.Component {
                             tag="h5"
                             className="text-uppercase text-muted mb-0"
                           >
-                            Totale Mensili Arretrati
+                            Mensili Arretrati {this.getMese()}
                           </CardTitle>
                           <span className="h2 font-weight-bold mb-0">
-                            999999999999
+                            {this.getMensiliArretrati()}
                           </span>
                         </div>
                         <Col className="col-auto">
