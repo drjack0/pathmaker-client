@@ -206,8 +206,10 @@ class Squad extends React.Component {
                 <i className="fas fa-ellipsis-v"/>
               </DropdownToggle>
               <DropdownMenu className="dropdown-menu-arrow" right>
-                <DropdownItem onClick={e => e.preventDefault()}>
-                  Controlla Scheda
+                <DropdownItem>
+                  <Link to={"/admin/eg/"+ censcode}>
+                    Controlla Scheda
+                  </Link>
                 </DropdownItem>
               </DropdownMenu>
             </UncontrolledDropdown>

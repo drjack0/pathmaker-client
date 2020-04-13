@@ -22,7 +22,8 @@ import Register from "views/examples/Register.js";
 import Login from "views/examples/Login.js";
 import Tables from "views/examples/Tables.js";
 import Squadriglie from "views/examples/Squadriglie.js";
-import Squad from "views/examples/Squad.js"
+import Squad from "views/examples/Squad.js";
+import EG from "views/examples/Eg.js";
 import Icons from "views/examples/Icons.js";
 import ForgotPassword from "views/examples/ForgotPassword.js"
 import ConfirmRegistration from "views/examples/ConfirmRegistration.js"
@@ -73,13 +74,13 @@ var routes = [
     component: Squad,
     layout: "/admin"
   },
-  /*{
+  {
     path: "/eg",
     name: "Eg",
     icon: "ni ni-bullet-list-67 text-red",
-    component: User,
+    component: EG,
     layout: "/admin"
-  },*/
+  },
 
   //SIDEBAR AND NAVBAR DISABLED ROUTES (WHEN LOGGED IN)
   {

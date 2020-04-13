@@ -78,7 +78,7 @@ class Squadriglie extends React.Component {
 
 
   renderCardSquad = () => {
-    return this.props.squad.map((sq,i) => {
+    return this.props.squad.sort((a,b) => (a.squadriglia < b.squadriglia) ? 1 : -1).map((sq,i) => {
       const {squadriglia, genere, lavoraPer} = sq;
       //const imgString = "/"+squadriglia.toLowerCase()+".jpg"
       const imgString = "/pantere.jpg"

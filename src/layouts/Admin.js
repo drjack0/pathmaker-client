@@ -29,6 +29,7 @@ import { API } from "aws-amplify";
 import routes from "routes.js";
 
 import Squad from "views/examples/Squad.js"
+import EG from "views/examples/Eg.js";
 
 class Admin extends React.Component {
   
@@ -149,7 +150,7 @@ class Admin extends React.Component {
       return (
         <Route
           path={"/admin/eg/"+eg.censcode}
-          render = {props => <Squad eg= {eg} {...this.props}/> } key={key} />
+          render = {props => <EG eg= {eg} {...this.props}/> } key={key} />
       )
     })
   }
@@ -191,6 +192,7 @@ class Admin extends React.Component {
             <Switch>
               {this.getRoutes(routes)}
               {this.getSquadRoutes()}
+              {this.getEgRoutes()}
               <Redirect from="*" to="/admin/index" />
             </Switch>
             <Container fluid>
