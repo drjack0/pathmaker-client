@@ -57,7 +57,7 @@ export default function Register(props) {
     try{
       console.log(username,verificationCode);
       const userReturnAuth = await Auth.confirmSignUp(username,verificationCode);
-      console.log(userReturnAuth.user);
+      console.log(userReturnAuth);
       props.history.push("/login")
     } catch(err){
       alert(err.message);
