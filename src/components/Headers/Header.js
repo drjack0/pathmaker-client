@@ -28,9 +28,10 @@ class Header extends React.Component {
   getMensiliArretrati = () => {
     const currentMonth = this.getMese().toString().toLowerCase();
     let total = 0;   
-    console.log(this.props.reparto[2].mensili['ottobre']);
     for(var i=0; i < this.props.reparto.length; i++){
-      total = total + (20 - parseInt(this.props.reparto[i].mensili[currentMonth]));
+      if(this.props.reparto[i].mensili !== undefined){
+        total = total + (20 - parseInt(this.props.reparto[i].mensili[currentMonth]));
+      }     
     }
     return total.toString();
   }

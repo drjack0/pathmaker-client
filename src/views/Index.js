@@ -181,7 +181,7 @@ class Index extends React.Component {
     }
 
     try{
-      const response = await API.post("pathMaker", "/budget", {
+      const response = await API.post("pathMakerUtils", "/budget", {
         body: {
           nomeOp: this.state.budgetOp,
           typeOp: typeOp,

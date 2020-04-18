@@ -80,14 +80,16 @@ class Squadriglie extends React.Component {
   renderCardSquad = () => {
     return this.props.squad.sort((a,b) => (a.squadriglia < b.squadriglia) ? 1 : -1).map((sq,i) => {
       const {squadriglia, genere, lavoraPer} = sq;
-      //const imgString = "/"+squadriglia.toLowerCase()+".jpg"
-      const imgString = "/pantere.jpg"
+      const imgString = this.props.squadURL.find(x => x.squad === sq.squadriglia).URL;
+      console.log(imgString)
+      //const imgString = "/pantere.jpg"
       return (
         
         <Col key={squadriglia} lg="6" xl="3" className="pb-2 pt-5">
           <Link to={"/admin/squadriglia/"+ sq.squadriglia.toLowerCase()}>
           <Card className="inner d-flex shadow mb-4 mb-xl-0 border-0">
-            <CardImg alt="..." src={require("assets/img/theme/squadriglie" + imgString)} top />
+            {/*<CardImg alt="..." src={require("assets/img/theme/squadriglie" + imgString)} top />*/}
+            <CardImg alt="..." src={imgString} top />
             <CardImgOverlay className="flex-center text-center align-items-center">
               <div>
                 <CardTitle className="d-flex align-items-center text-center h1 text-white mb-2">{squadriglia}</CardTitle>
@@ -117,7 +119,7 @@ class Squadriglie extends React.Component {
     }
     console.log(this.state)
     try{
-      const response = await API.post("pathMaker", `/squadriglie`, {
+      const response = await API.post("pathMakerReparto", `/squadriglie`, {
         body: {
           squadriglia: this.state.addSquadNome,
           genere: genere,
@@ -135,7 +137,7 @@ class Squadriglie extends React.Component {
   }
 
   render() {
-    console.log(this.props.squad);
+    console.log("SQUADRIGLIE PROPS",this.props);
     return (
       <>
         <Header {...this.props} />

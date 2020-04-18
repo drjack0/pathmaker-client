@@ -54,9 +54,14 @@ Amplify.configure({
   API: {
     endpoints: [
       {
-        name: "pathMaker",
-        endpoint: config.apiGateway.URL,
-        region: config.apiGateway.REGION
+        name: "pathMakerReparto",
+        endpoint: config.apiGatewayReparto.URL,
+        region: config.apiGatewayReparto.REGION
+      },
+      {
+        name: "pathMakerUtils",
+        endpoint: config.apiGatewayUtils.URL,
+        region: config.apiGatewayUtils.REGION
       },
     ]
   }
@@ -214,45 +219,3 @@ ReactDOM.render(
   <App/>,  
   document.getElementById("root")
 );
-
-
-
-
-/*export default function App (props){
-  const [isAuthenticated,userHasAuthenticated] = useState(false);
-  return perro;
-}
-
-
-const perro = ReactDOM.render(
-  <BrowserRouter>
-    <Switch>
-      <Route path="/admin" render={props => <AdminLayout {...props}/>} />
-      <Route path="/auth" render={props => <AuthLayout {...props} />} />
-      <Redirect from="/" to="/auth/login" />
-    </Switch>
-  </BrowserRouter>,  
-  document.getElementById("root")
-);*/
-
-/*class App extends React.Component{
-
-  
-  constructor(props){
-    super(props);
-  }
-
-  render(){
-    return(
-      <BrowserRouter>
-        <Switch>
-          <Route path="/admin" render={props => <AdminLayout {...props}/>} />
-          <Route path="/auth" render={props => <AuthLayout {...props} />} />
-          <Redirect from="/" to="/auth/login" />
-        </Switch>
-      </BrowserRouter>
-    );
-  }
-}
-
-ReactDOM.render(<App />, document.getElementById("root"));*/

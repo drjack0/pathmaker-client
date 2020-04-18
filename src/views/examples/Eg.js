@@ -38,11 +38,17 @@ import {
   InputGroupAddon,
   InputGroupText,
   Row,
-  Col
+  Col,
+  Collapse,
+  ListGroup,
+  ListGroupItem,
+  Label
 } from "reactstrap";
 // core components
 import UserHeader from "components/Headers/UserHeader.js";
-import { Auth, API } from "aws-amplify";
+import { Auth, API, Storage } from "aws-amplify";
+
+import {s3UploadAutorizzazione,s3UploadCensimento,s3UploadPrivacy,s3UploadSS, s3UploadTS} from "libs/awsLib.js";
 
 class Profile extends React.Component {
   constructor(props){
@@ -101,8 +107,36 @@ class Profile extends React.Component {
       noteObiettivo: "",
 
       nomeCompetenza: "",
-      annoCompetenza: ""
+      annoCompetenza: "",
+
+      burocraziaCollapse: false,
+      competenzeCollapse: false,
+      obiettiviCollapse: false,
+      addObiettivo: false,
+      addCompetenza: false,
+
+      nomeCompetenza: "",
+      annoCompetenza: "",
+
+      nomeObiettivo: "",
+      noteObiettivo: ""
     }
+
+    this.fileAutorizzazione = React.createRef();
+    this.fileCensimento = React.createRef();
+    this.filePrivacy = React.createRef();
+    this.fileSS = React.createRef();
+    this.fileTS = React.createRef();
+  }
+
+  toggleCompetenzeCollapse = () => {
+    this.setState({competenzeCollapse: !this.state.competenzeCollapse})
+  }
+  toggleObiettiviCollapse = () => {
+    this.setState({obiettiviCollapse: !this.state.obiettiviCollapse})
+  }
+  toggleBurocraziaCollapse = () => {
+    this.setState({burocraziaCollapse: !this.state.burocraziaCollapse});
   }
 
   //MODAL MODIFICA MAIN
@@ -112,7 +146,7 @@ class Profile extends React.Component {
   handleMainModal = async (event) => {
     event.preventDefault();
     try{
-      const response = await API.put("pathMaker", `/reparto/${this.props.eg.censcode}`, {
+      const response = await API.put("pathMakerReparto", `/reparto/${this.props.eg.censcode}`, {
         body: {
           nome: this.state.nomeEG.length > 0 ? this.state.nomeEG : this.props.eg.nome,
           cognome: this.state.cognomeEG.length > 0 ? this.state.cognomeEG : this.props.eg.cognome
@@ -138,9 +172,10 @@ class Profile extends React.Component {
   handleDeleteModal = async (event) => {
     event.preventDefault();
     try{
-      const response = await API.del("pathMaker",`/reparto/${this.props.eg.censcode}`);
+      await this.removeMemberDocuments();
+      const response = await API.del("pathMakerReparto",`/reparto/${this.props.eg.censcode}`);
       console.log(response);
-      this.props.history.go(`/admin/index`);
+      this.props.history.go(`/admin/squadriglie`);
     } catch(err){
       alert(err);
       console.log(err);
@@ -155,7 +190,7 @@ class Profile extends React.Component {
   handleMammaModal = async (event) => {
     event.preventDefault();
     try{
-      const response = await API.put("pathMaker", `/reparto/mamma/${this.props.eg.censcode}`, {
+      const response = await API.put("pathMakerReparto", `/reparto/mamma/${this.props.eg.censcode}`, {
         body: {
           nomeMamma: this.state.nomeMammaEG.length > 0 ? this.state.nomeMammaEG : this.props.eg.mamma.nomeMamma,
           cellMamma: this.state.cellMammaEG.length > 0 ? this.state.cellMammaEG : this.props.eg.mamma.cellMamma,
@@ -178,7 +213,7 @@ class Profile extends React.Component {
   handlePapaModal = async (event) => {
     event.preventDefault();
     try{
-      const response = await API.put("pathMaker", `/reparto/mamma/${this.props.eg.censcode}`, {
+      const response = await API.put("pathMakerReparto", `/reparto/mamma/${this.props.eg.censcode}`, {
         body: {
           nomePapa: this.state.nomePapaEG.length > 0 ? this.state.nomePapaEG : this.props.eg.papa.nomePapa,
           cellPapa: this.state.cellPapaEG.length > 0 ? this.state.cellPapaEG : this.props.eg.papa.cellPapa,
@@ -201,7 +236,7 @@ class Profile extends React.Component {
   handleRecapitiModal = async (event) => {
     event.preventDefault();
     try{
-      const response = await API.put("pathMaker", `/reparto/recapiti/${this.props.eg.censcode}`, {
+      const response = await API.put("pathMakerReparto", `/reparto/recapiti/${this.props.eg.censcode}`, {
         body: {
           casa: this.state.casaEG.length > 0 ? this.state.casaEG : this.props.eg.recapiti.casa,
           cellulare: this.state.cellulareEG.length > 0 ? this.state.cellulareEG : this.props.eg.recapiti.cellulare,
@@ -225,7 +260,7 @@ class Profile extends React.Component {
   handleSentieroModal = async (event) => {
     event.preventDefault();
     try{
-      const response = await API.put("pathMaker", `/reparto/sentiero/${this.props.eg.censcode}`, {
+      const response = await API.put("pathMakerReparto", `/reparto/sentiero/${this.props.eg.censcode}`, {
         body: {
           squadriglia: this.state.squadrigliaEG.length > 0 ? this.state.squadrigliaEG : this.props.eg.sentiero.squadriglia,
           camminaPer: this.state.camminaPerEG.length > 0 ? this.state.camminaPerEG : this.props.eg.sentiero.camminaPer,
@@ -251,7 +286,7 @@ class Profile extends React.Component {
   handleMensiliModal = async (event) => {
     event.preventDefault();
     try{
-      const response = await API.put("pathMaker", `/reparto/mensili/${this.props.eg.censcode}`, {
+      const response = await API.put("pathMakerReparto", `/reparto/mensili/${this.props.eg.censcode}`, {
         body: {
           ottobre: this.state.ottobreEG.length > 0 ? this.state.ottobreEG : this.props.eg.mensili.ottobre,
           novembre: this.state.novembreEG.length > 0 ? this.state.novembreEG : this.props.eg.mensili.novembre,
@@ -274,16 +309,31 @@ class Profile extends React.Component {
     }
   }
 
+  //MODAL MODIFICA BUROCRAZIA
+
   toggleBurocraziaModal = () => {
     this.setState({burocraziaModal: !this.state.burocraziaModal})
   }
 
   handleBurocraziaModal = async (event) => {
     event.preventDefault();
+    const autorizzazioneKey = await this.handleFileSubmitAutorizzazione(event);
+    const censimentoKey = await this.handleFileSubmitCensimento(event);
+    const privacyKey= await this.handleFileSubmitPrivacy(event);
+    const ssKey = await this.handleFileSubmitSS(event);
+    const tsKey = await this.handleFileSubmitTS(event);
+
+    console.log(autorizzazioneKey,censimentoKey,privacyKey,ssKey,tsKey);
+
     try{
-      const response = await API.put("pathMaker", `/reparto/burocrazia/${this.props.eg.censcode}`, {
+      const response = await API.put("pathMakerReparto", `/reparto/burocrazia/${this.props.eg.censcode}`, {
         body: {
-          censimento: this.state.censimentoEG.length > 0 ? this.state.censimentoEG : this.props.eg.burocrazia.censimento        
+          censimento: this.state.censimentoEG.length > 0 ? this.state.censimentoEG : this.props.eg.burocrazia.censimento,
+          autorizzazioneDocumento: autorizzazioneKey !== null ? autorizzazioneKey : "link",
+          censimentoDocumento: censimentoKey !== null ? censimentoKey : "link",
+          privacyDocumento: privacyKey !== null ? privacyKey : "link",
+          ssDocumento: ssKey !== null ? ssKey : "link",
+          tsDocumento: tsKey !== null ? tsKey : "link"
         }
       });
       console.log(response);
@@ -294,6 +344,104 @@ class Profile extends React.Component {
     }
   }
 
+  handleFileChangeAutorizzazione = (event) => {
+    this.fileAutorizzazione.current = event.target.files[0]
+  }
+  handleFileSubmitAutorizzazione = async () => {
+    
+    try{
+      const autorizzazione = this.fileAutorizzazione.current ? await s3UploadAutorizzazione(this.fileAutorizzazione.current,this.props.eg.censcode,this.props.eg.cognome,this.props.eg.nome) : null;
+      console.log(autorizzazione);
+      return autorizzazione;
+    } catch(err) {
+      console.log(err);
+    }
+  }
+
+  handleFileChangeCensimento = (event) => {
+    this.fileCensimento.current = event.target.files[0]
+  }
+
+  handleFileSubmitCensimento = async () => {
+    
+    try{
+      const censimento = this.fileCensimento.current ? await s3UploadCensimento(this.fileCensimento.current,this.props.eg.censcode,this.props.eg.cognome,this.props.eg.nome) : null;
+      console.log(censimento);
+      return censimento;
+    } catch(err) {
+      console.log(err);
+    }
+  }
+
+  handleFileChangePrivacy = (event) => {
+    this.filePrivacy.current = event.target.files[0]
+  }
+
+  handleFileSubmitPrivacy = async () => {
+    
+    try{
+      const privacy = this.filePrivacy.current ? await s3UploadPrivacy(this.filePrivacy.current,this.props.eg.censcode,this.props.eg.cognome,this.props.eg.nome) : null;
+      console.log(privacy);
+      return privacy;
+    } catch(err) {
+      console.log(err);
+    }
+  }
+
+  handleFileChangeScheda = (event) => {
+    this.fileSS.current = event.target.files[0]
+  }
+
+  handleFileSubmitSS = async () => {
+    
+    try{
+      const scheda = this.fileSS.current ? await s3UploadSS(this.fileSS.current,this.props.eg.censcode,this.props.eg.cognome,this.props.eg.nome) : null;
+      console.log(scheda);
+      return scheda;
+    } catch(err) {
+      console.log(err);
+    }
+  }
+
+  handleFileChangeTessera = (event) => {
+    this.fileTS.current = event.target.files[0]
+  }
+
+  handleFileSubmitTS = async () => {
+    
+    try{
+      const tessera = this.fileTS.current ? await s3UploadTS(this.fileTS.current,this.props.eg.censcode,this.props.eg.cognome,this.props.eg.nome) : null;
+      console.log(tessera);
+      return tessera;
+    } catch(err) {
+      console.log(err);
+    }
+  }
+
+  getDocument = async (event, type,format) => {
+    event.preventDefault()
+    const typeString = type.toString();
+    const formatString = format.toString();
+    const res = await Storage.get(`${typeString}/${formatString}-${this.props.eg.censcode}-${this.props.eg.nome}-${this.props.eg.cognome}`).then(data => {return data});
+    console.log(res);
+    window.open(res.toString());
+  }
+  removeMemberDocuments = async() => {
+    const censimentoString = `censimenti/Censimento-${this.props.eg.censcode}-${this.props.eg.nome}-${this.props.eg.cognome}`;
+    const autorizzazioneString = `autorizzazioni/Autorizzazione-${this.props.eg.censcode}-${this.props.eg.nome}-${this.props.eg.cognome}`;
+    const privacyString = `privacy/Privacy-${this.props.eg.censcode}-${this.props.eg.nome}-${this.props.eg.cognome}`;
+    const ssString = `schede/SS-${this.props.eg.censcode}-${this.props.eg.nome}-${this.props.eg.cognome}`;
+    const tsString = `tessere/TS-${this.props.eg.censcode}-${this.props.eg.nome}-${this.props.eg.cognome}`;
+
+    const resCensimento = await Storage.remove(censimentoString).then(data => {return data});
+    const resAutorizzazione = await Storage.remove(autorizzazioneString).then(data => {return data});
+    const resPrivacy = await Storage.remove(privacyString).then(data => {return data});
+    const resSS = await Storage.remove(ssString).then(data => {return data});
+    const resTS = await Storage.remove(tsString).then(data => {return data});
+
+    console.log(resCensimento,resAutorizzazione,resPrivacy,resSS, resTS);
+  } 
+
   //UTILS
   birthFormat = (date) => {
     const splitted = date.split("-");
@@ -302,37 +450,10 @@ class Profile extends React.Component {
 
   updateDateFormat = (date) => {
     const stringDate = new Date(date);
-    return stringDate.getDate() + "/" + stringDate.getMonth() + "/" + stringDate.getFullYear();
-  }
-
-  renderCompetenze = () => {
-    if(this.props.eg.sentiero.competenze.length === 0){
-      return "N/A"
-    }
-    const sortedlist = this.props.eg.sentiero.competenze.sort((a,b) => (a.anno > b.anno) ? 1 : (a.anno === b.anno) ? ((a.nomeCompetenza > b.nomeCompetenza) ? 1 : -1) : -1);
-    let ret = "";
-    for(var i = 0; i < sortedlist.length; i++){
-      let compRet = sortedlist[i].nomeCompetenza + " " + sortedlist[i].anno + ", ";
-      ret = ret + compRet;
-    }
-    return ret.substr(0,ret.length-2)
-  }
-
-  renderObiettivi = () => {
-    if(this.props.eg.sentiero.obiettivi.length === 0){
-      return "N/A"
-    }
-    const sortedlist = this.props.eg.sentiero.obiettivi.sort((a,b) => (a.nomeObiettivo > b.nomeObiettivo) ? 1 : (a.nomeObiettivo === b.nomeObiettivo) ? ((a.noteObiettivo > b.noteObiettivo) ? 1 : -1) : -1);
-    let ret = "";
-    for(var i = 0; i < sortedlist.length; i++){
-      let compRet = sortedlist[i].nomeObiettivo + " (Note: " + sortedlist[i].noteObiettivo + "), ";
-      ret = ret + compRet;
-    }
-    return ret.substr(0,ret.length-2)
+    return stringDate.getDate() + "/" + (stringDate.getMonth()+1) + "/" + stringDate.getFullYear();
   }
 
   setBackIcon = () => {
-    console.log("FUNCTION")
     let colorIcons;
     switch(this.props.eg.sentiero.squadriglia){
       case "Tigri":
@@ -364,10 +485,116 @@ class Profile extends React.Component {
   }
 
 
+  //OBIETTIVI E COMPETENZE -> CRUD OPERATIONS
+  toggleAddObiettivoModal = () => {
+    this.setState({addObiettivo: !this.state.addObiettivo})
+  }
+  toggleAddCompetenzaModal = () => {
+    this.setState({addCompetenza: !this.state.addCompetenza})
+  }
+
+  renderCompetenzeList = () => {
+    if(this.props.eg.sentiero.competenze.length === 0){
+      return (<p>Nessuna Competenza Registrata</p>);
+    }
+    return this.props.eg.sentiero.competenze.map((comp,index) => {
+      const {anno, nomeCompetenza} = comp;
+      return (
+        <ListGroupItem key={index} className="h2 font-weight-bold mb-0">
+          {anno} - {nomeCompetenza} {' '}
+          <span className="ml-4 text-red">
+          <i className="far fa-trash-alt" style={{cursor: "pointer"}} onClick={e => this.deleteCompetenza(e,index)}/>
+          </span>
+        </ListGroupItem>
+      );
+    });
+  }
+
+  renderObiettiviList = () => {
+    if(this.props.eg.sentiero.obiettivi.length === 0){
+      return (<p>Nessun Obiettivo Registrato</p>);
+    }
+    return this.props.eg.sentiero.obiettivi.map((ob,index) => {
+      const {nomeObiettivo, noteObiettivo} = ob;
+      return (
+        <ListGroupItem key={index} className="h2 font-weight-bold mb-0">
+          {nomeObiettivo} - Note: {noteObiettivo} {' '}
+          <span className="ml-4 text-red">
+          <i className="far fa-trash-alt" style={{cursor: "pointer"}} onClick={e => this.deleteObiettivo(e,index)}/>
+          </span>
+        </ListGroupItem>
+      );
+    });
+  }
+
+  deleteObiettivo = async (event,index) => {
+    console.log(index);
+    event.preventDefault();
+    try{
+      const res = await API.put("pathMakerReparto",`/reparto/sentiero/deleteobiettivo/${this.props.eg.censcode}`, {
+        body: {
+          obIndex: index
+        }
+      });
+      console.log(res);
+      this.props.history.go(`/admin/eg/${this.props.eg.censcode}`)
+    } catch(err){
+      console.log(err)
+    }
+  }
+
+  deleteCompetenza = async (event,index) => {
+    console.log(index);
+    event.preventDefault();
+    try{
+      const res = await API.put("pathMakerReparto",`/reparto/sentiero/deletecompetenza/${this.props.eg.censcode}`, {
+        body: {
+          compIndex: index
+        }
+      });
+      console.log(res);
+      this.props.history.go(`/admin/eg/${this.props.eg.censcode}`)
+    } catch(err){
+      console.log(err)
+    }
+  }
+
+  handleAddObiettivo = async (event) => {
+    event.preventDefault();
+    try{
+      const res = await API.put("pathMakerReparto", `/reparto/sentiero/addobiettivo/${this.props.eg.censcode}`, {
+        body: {
+          nomeObiettivo: this.state.nomeObiettivo.length > 0 ? this.state.nomeObiettivo : "N/A",
+          noteObiettivo: this.state.noteObiettivo.length > 0 ? this.state.noteObiettivo : "N/A"
+        }
+      });
+      console.log(res);
+      this.props.history.go(`/admin/eg/${this.props.eg.censcode}`)
+    } catch(err) {
+      console.log(err);
+    }
+  }
+
+  handleAddCompetenza = async (event) => {
+    event.preventDefault();
+    try{
+      const res = await API.put("pathMakerReparto", `/reparto/sentiero/addcompetenza/${this.props.eg.censcode}`, {
+        body: {
+          nomeCompetenza: this.state.nomeCompetenza.length > 0 ? this.state.nomeCompetenza : "N/A",
+          anno: this.state.annoCompetenza.length > 0 ? this.state.annoCompetenza : "N/A"
+        }
+      });
+      console.log(res);
+      this.props.history.go(`/admin/eg/${this.props.eg.censcode}`)
+    } catch(err) {
+      console.log(err);
+    }
+  }
+
+
  
   render() {
     console.log("EG PROPS", this.props)
-    console.log(this.setBackIcon())
     return (
       <>
       {/* HEADER EG */}
@@ -375,8 +602,8 @@ class Profile extends React.Component {
           className="header pb-8 pt-5 pt-lg-8 d-flex align-items-center"
           style={{
             minHeight: "600px",
-            backgroundImage:
-              "url(" + require("assets/img/theme/squadriglie/" + this.props.eg.sentiero.squadriglia.toLowerCase() + ".jpg") + ")",
+            backgroundImage: "url(" + this.props.squadURL.find(x => x.squad === this.props.eg.sentiero.squadriglia).URL.toString() + ")",
+              //"url(" + require("assets/img/theme/squadriglie/" + this.props.eg.sentiero.squadriglia.toLowerCase() + ".jpg") + ")",
             backgroundSize: "cover",
             backgroundPosition: "center"
           }}
@@ -410,7 +637,7 @@ class Profile extends React.Component {
                         <img
                           alt="..."
                           className="rounded-circle"
-                          src={require("assets/img/theme/team-1-800x800.jpg")}
+                          src={require("assets/img/theme/img-800.jpg")}
                         />
                       </a>
                     </div>
@@ -660,6 +887,81 @@ class Profile extends React.Component {
                           </div>
                         </Col>
                       </Row>
+                      
+                      <Row className="mt-4">         
+                        <div className="col">
+                        <CardTitle tag="h5" style={{cursor: "pointer"}} className="text-uppercase text-muted mb-0" onClick={this.toggleBurocraziaCollapse}>
+                            Burocrazia
+                          </CardTitle>
+                          <span style={{cursor: "pointer"}} className="h4 font-weight-bold mb-0" onClick={this.toggleBurocraziaCollapse}>
+                            Clicca qui per sapere di più
+                          </span>
+                          <Collapse isOpen={this.state.burocraziaCollapse}>
+                            <ListGroup flush={true}>
+                              <ListGroupItem className="h3 font-weight-bold mb-0">
+                              Censimento:  {this.props.eg.burocrazia.fogliCensimento.consegnato} {' '}
+                               {this.props.eg.burocrazia.fogliCensimento.documento !== "link" ? 
+                                  (<div>
+                                  <span className="ml-4 text-primary">
+                                    <i className="far fa-eye" style={{cursor: "pointer"}} onClick={e => this.getDocument(e,"censimenti","Censimento")}/>
+                                  </span>
+                                  <p>Consegnato il {this.updateDateFormat(this.props.eg.burocrazia.fogliCensimento.dataConsegna)}</p>
+                                  </div>) : 
+                                  <span>{' '}</span>
+                                 }
+                              </ListGroupItem>
+                              <ListGroupItem className="h3 font-weight-bold mb-0">
+                              Privacy:   {this.props.eg.burocrazia.privacy.consegnato} {' '}
+                              {this.props.eg.burocrazia.privacy.documento !== "link" ?
+                                  (<div>
+                                  <span className="ml-4 text-primary">
+                                    <i className="far fa-eye" style={{cursor: "pointer"}} onClick={e => this.getDocument(e,"privacy","Privacy")}/>
+                                  </span>
+                                  <p>Consegnato il {this.updateDateFormat(this.props.eg.burocrazia.privacy.dataConsegna)}</p>
+                                  </div>) : 
+                                  <span>{' '}</span>
+                                 }
+                              </ListGroupItem>
+                              <ListGroupItem className="h3 font-weight-bold mb-0">
+                              Autorizzazione:  {this.props.eg.burocrazia.autorizzazione.consegnato} {' '}
+                              {this.props.eg.burocrazia.autorizzazione.documento !== "link" ? 
+                                  (<div>
+                                  <span className="ml-4 text-primary">
+                                    <i className="far fa-eye" style={{cursor: "pointer"}} onClick={e => this.getDocument(e,"autorizzazioni","Autorizzazione")}/>
+                                  </span>
+                                  <p>Consegnato il {this.updateDateFormat(this.props.eg.burocrazia.autorizzazione.dataConsegna)}</p>
+                                  </div>) : 
+                                  <span>{' '}</span>
+                                 }
+                              </ListGroupItem>
+                              <ListGroupItem className="h3 font-weight-bold mb-0">
+                              Scheda:  {this.props.eg.burocrazia.schedaSanitaria.consegnato} {' '}
+                              {this.props.eg.burocrazia.schedaSanitaria.documento !== "link" ? 
+                                  (<div><span className="ml-4 text-primary">
+                                    <i className="far fa-eye" style={{cursor: "pointer"}} onClick={e => this.getDocument(e,"schede","SS")}/>
+                                  </span>
+                                  <p>Consegnato il {this.updateDateFormat(this.props.eg.burocrazia.schedaSanitaria.dataConsegna)}</p>
+                                  </div> ): 
+                                  <span>{' '}</span>            
+                                 }  
+                              </ListGroupItem>
+                              <ListGroupItem className="h3 font-weight-bold mb-0">
+                              Tessera:  {this.props.eg.burocrazia.tesseraSanitaria.consegnato} {' '}
+                              {this.props.eg.burocrazia.tesseraSanitaria.documento !== "link" ? 
+                                  (<div>
+                                    <span className="ml-4 text-primary">
+                                      <i className="far fa-eye" style={{cursor: "pointer"}} onClick={e => this.getDocument(e,"tessere","TS")}/>
+                                    </span>
+                                    <p>Consegnato il {this.updateDateFormat(this.props.eg.burocrazia.tesseraSanitaria.dataConsegna)}</p>
+                                  </div>) : 
+                                  <span>{' '}</span>
+                                 }
+                              </ListGroupItem>
+                            </ListGroup>
+                          </Collapse>
+                        </div>                              
+                      </Row>
+                      
                       <p className="mt-3 mb-0 text-muted text-sm">
                         <span className="text-success mr-2">
                           <i className="fa fa-user-edit" /> Aggiornato al
@@ -744,22 +1046,40 @@ class Profile extends React.Component {
                       </Row>
                       <Row className="mt-4">         
                         <div className="col">
-                        <CardTitle tag="h5" className="text-uppercase text-muted mb-0">
+                        <CardTitle tag="h5" style={{cursor: "pointer"}} className="text-uppercase text-muted mb-0" onClick={this.toggleObiettiviCollapse}>
                             Obiettivi
                           </CardTitle>
-                          <span className="h2 font-weight-bold mb-0">
-                            {this.renderObiettivi()}
+                          <span style={{cursor: "pointer"}} className="h4 font-weight-bold mb-0" onClick={this.toggleObiettiviCollapse}>
+                            Clicca qui per sapere di più
                           </span>
+                          <Collapse isOpen={this.state.obiettiviCollapse}>
+                            <ListGroup flush={true}>
+                              {this.renderObiettiviList()}
+                              <ListGroupItem>
+                                <Button outline color="primary" onClick={this.toggleAddObiettivoModal}>Aggiungi Obiettivo</Button>
+                              </ListGroupItem>
+                            </ListGroup>
+                          </Collapse>
                         </div>                              
                       </Row>
+
                       <Row className="mt-4">         
                         <div className="col">
-                        <CardTitle tag="h5" className="text-uppercase text-muted mb-0">
+                        <CardTitle style={{cursor: "pointer"}} tag="h5" className="text-uppercase text-muted mb-0" onClick={this.toggleCompetenzeCollapse}>
                             Competenze
                           </CardTitle>
-                          <span className="h2 font-weight-bold mb-0">
-                            {this.renderCompetenze()}
+                          
+                          <span style={{cursor: "pointer"}} className="h4 font-weight-bold mb-0" onClick={this.toggleCompetenzeCollapse}>
+                            Clicca qui per sapere di più
                           </span>
+                          <Collapse isOpen={this.state.competenzeCollapse}>
+                            <ListGroup>
+                              {this.renderCompetenzeList()}
+                              <ListGroupItem>
+                                <Button outline color="primary" onClick={this.toggleAddCompetenzaModal}>Aggiungi Competenza</Button>
+                              </ListGroupItem>
+                            </ListGroup>
+                          </Collapse>
                         </div>                              
                       </Row>
 
@@ -780,18 +1100,16 @@ class Profile extends React.Component {
                     <Col>
                       <div className="card-profile-stats d-flex justify-content-center">
                         <Button type="button" color="success" size="lg" outline className="btn mb-3 mr-3" onClick={this.toggleSentieroModal}>Modifica Sentiero</Button>
-                        <Button type="button" color="warning" size="lg" outline className="btn mb-3 ml-3" >Aggiungi Obiettivo</Button>
-                        <Button type="button" color="warning" size="lg" outline className="btn mb-3 ml-3" >Aggiungi Competenza</Button>
-                      </div>
-                    </Col>
-                  </Row>
-
-                  <p className="mt-3 mb-0 text-muted text-sm">
+                        <p className="mt-3 mb-0 text-muted text-sm">
                         <span className="text-success mr-2">
                           <i className="fa fa-user-edit" /> Sentiero Aggiornato al
                         </span>{" "}
                         <span className="text-nowrap">{this.updateDateFormat(this.props.eg.sentiero.updateSentiero)}</span>
                       </p>
+                      </div>
+                    </Col>
+                  </Row>
+
                     </CardBody>
                 
               </Card>
@@ -1118,7 +1436,7 @@ class Profile extends React.Component {
               <Form role="form" onSubmit={this.handleRecapitiModal}>
               <ModalBody>
                 <div className="py-3 text-center">
-                <i class="far fa-address-card fa-3x"></i>
+                <i className="far fa-address-card fa-3x"></i>
                   <h4 className="heading mt-4">{this.props.eg.nome} {this.props.eg.cognome}</h4>
                   <p>Modifica i Recapiti</p>
                   <p>Per non modificare un campo, lascialo così com'è!</p>
@@ -1194,7 +1512,38 @@ class Profile extends React.Component {
                         </InputGroupAddon>
                         <Input placeholder={"Importo Censimento: " + this.props.eg.burocrazia.censimento} type="text" onChange={e => this.setState({censimentoEG: e.target.value})}/>
                       </InputGroup>
-                    </FormGroup>                    
+                    </FormGroup>
+                    {/* CARICAMENTO FILE */}
+                    <FormGroup controlid="fogliCensimento" className="mb-3 mx-6">
+                      <Label>Fogli Censimento</Label>
+                      <InputGroup className="input-group-alternative">
+                        <Input accept="application/pdf" type="file" onChange={e => this.handleFileChangeCensimento(e)}/>
+                      </InputGroup>
+                    </FormGroup>
+                    <FormGroup controlid="privacy" className="mb-3 mx-6">
+                      <Label>Foglio Privacy</Label>
+                      <InputGroup className="input-group-alternative">
+                        <Input accept="application/pdf" type="file" onChange={e => this.handleFileChangePrivacy(e)}/>
+                      </InputGroup>
+                    </FormGroup>
+                    <FormGroup controlid="autorizzazione" className="mb-3 mx-6">
+                      <Label>Autorizzazione Branca EG</Label>
+                      <InputGroup className="input-group-alternative">
+                        <Input accept="application/pdf" type="file" onChange={e => this.handleFileChangeAutorizzazione(e)}/>
+                      </InputGroup>
+                    </FormGroup>
+                    <FormGroup controlid="SS" className="mb-3 mx-6">
+                      <Label>Scheda Sanitaria</Label>
+                      <InputGroup className="input-group-alternative">
+                        <Input accept="application/pdf" type="file" onChange={e => this.handleFileChangeScheda(e)}/>
+                      </InputGroup>
+                    </FormGroup>
+                    <FormGroup controlid="TS" className="mb-3 mx-6">
+                      <Label>Tessera Sanitaria</Label>
+                      <InputGroup className="input-group-alternative">
+                        <Input accept="application/pdf" type="file" onChange={e => this.handleFileChangeTessera(e)}/>
+                      </InputGroup>
+                    </FormGroup>                     
               </ModalBody>
               <ModalFooter>
                 <Button className="btn btn-white" type="submit">Modifica</Button>
@@ -1213,7 +1562,7 @@ class Profile extends React.Component {
               <Form role="form" onSubmit={this.handleSentieroModal}>
               <ModalBody>
                 <div className="py-3 text-center">
-                <i class="fas fa-street-view fa-3x"></i>
+                <i className="fas fa-street-view fa-3x"></i>
                   <h4 className="heading mt-4">{this.props.eg.nome} {this.props.eg.cognome}</h4>
                   <p>Modifica il Sentiero</p>
                   <p>Per non modificare un campo, lascialo così com'è!</p>
@@ -1423,7 +1772,88 @@ class Profile extends React.Component {
             </div>         
           </Modal>
 
-
+          {/* MODAL ADD OBIETTIVO */}
+          <Modal isOpen={this.state.addObiettivo} toggle={e => this.toggleAddObiettivoModal} className="modal-dialog modal-danger modal-dialog-centered modal-">
+            <div className="modal-content bg-gradient-danger">
+              <ModalHeader toggle={this.toggleAddObiettivoModal} />
+              <Form role="form" onSubmit={this.handleAddObiettivo}>
+              <ModalBody>
+                <div className="py-3 text-center">
+                  <i className="fas fa-bullseye fa-3x"></i>
+                  <h4 className="heading mt-4">{this.props.eg.nome} {this.props.eg.cognome}</h4>
+                  <p>Inserisci un obiettivo</p>
+                  <p>Per non modificare un campo, lascialo così com'è!</p>
+                </div>          
+                    <FormGroup controlid="nomeObiettivo" className="mb-3 mx-6">
+                      <InputGroup className="input-group-alternative">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="fas fa-crosshairs" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <Input placeholder="Obiettivo" type="text" onChange={e => this.setState({nomeObiettivo: e.target.value})}/>
+                      </InputGroup>
+                    </FormGroup>
+                    <FormGroup controlid="noteObiettivo" className="mb-3 mx-6">
+                      <InputGroup className="input-group-alternative">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="far fa-sticky-note" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <Input placeholder="Note Obiettivo" type="text" onChange={e => this.setState({noteObiettivo: e.target.value})}/>
+                      </InputGroup>
+                    </FormGroup>                    
+              </ModalBody>
+              <ModalFooter>
+                <Button className="btn btn-white" type="submit">Aggiungi</Button>
+                <Button className="btn btn-link text-white ml-auto" /*color="secondary"*/ onClick={this.toggleAddObiettivoModal}>Indietro</Button>
+              </ModalFooter>
+              </Form> 
+            </div>         
+          </Modal>
+        
+          {/* MODAL ADD COMPETENZA */}
+          <Modal isOpen={this.state.addCompetenza} toggle={e => this.toggleAddCompetenzaModal} className="modal-dialog modal-danger modal-dialog-centered modal-">
+            <div className="modal-content bg-gradient-danger">
+              <ModalHeader toggle={this.toggleAddCompetenzaModal} />
+              <Form role="form" onSubmit={this.handleAddCompetenza}>
+              <ModalBody>
+                <div className="py-3 text-center">
+                  <i className="far fa-compass fa-3x"></i>
+                  <h4 className="heading mt-4">{this.props.eg.nome} {this.props.eg.cognome}</h4>
+                  <p>Inserisci Competenza Acquisita</p>
+                  <p>Per non modificare un campo, lascialo così com'è!</p>
+                </div>          
+                    <FormGroup controlid="nomeObiettivo" className="mb-3 mx-6">
+                      <InputGroup className="input-group-alternative">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="fas fa-crosshairs" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <Input placeholder="Comptenza Acquisita" type="text" onChange={e => this.setState({nomeCompetenza: e.target.value})}/>
+                      </InputGroup>
+                    </FormGroup>
+                    <FormGroup controlid="noteObiettivo" className="mb-3 mx-6">
+                      <InputGroup className="input-group-alternative">
+                        <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                            <i className="far fa-sticky-note" />
+                          </InputGroupText>
+                        </InputGroupAddon>
+                        <Input placeholder="Anno" type="number" min="0" onChange={e => this.setState({annoCompetenza: e.target.value})}/>
+                      </InputGroup>
+                    </FormGroup>                    
+              </ModalBody>
+              <ModalFooter>
+                <Button className="btn btn-white" type="submit">Aggiungi</Button>
+                <Button className="btn btn-link text-white ml-auto" /*color="secondary"*/ onClick={this.toggleAddCompetenzaModal}>Indietro</Button>
+              </ModalFooter>
+              </Form> 
+            </div>         
+          </Modal>
+        
         </Container>
       </>
     );

@@ -111,7 +111,7 @@ class Profile extends React.Component {
   enableUser = async (event,user) => {
     event.preventDefault();
     try{
-      const response = await API.put("pathMaker", `/utils/enableuser/${user}`);
+      const response = await API.put("pathMakerUtils", `/utils/enableuser/${user}`);
       console.log(response)
       this.props.history.go("admin/user-profile");
     } catch(err){
@@ -123,7 +123,7 @@ class Profile extends React.Component {
   deleteUser = async (event,user) => {
     event.preventDefault();
     try{
-      const response = await API.del("pathMaker", `/utils/deleteuser/${user}`);
+      const response = await API.del("pathMakerUtils", `/utils/deleteuser/${user}`);
       console.log(response)
       this.props.history.go("admin/user-profile");
     } catch(err){
@@ -135,7 +135,7 @@ class Profile extends React.Component {
   disableUser = async (event,user) => {
     event.preventDefault();
     try{
-      const response = await API.put("pathMaker", `/utils/disableuser/${user}`);
+      const response = await API.put("pathMakerUtils", `/utils/disableuser/${user}`);
       console.log(response)
       this.props.history.go("admin/user-profile");
     } catch(err){
@@ -175,7 +175,7 @@ class Profile extends React.Component {
     getUserList = async () => {
       var userListProd;
       try{
-        userListProd = await API.get("pathMaker","/utils/listusers");
+        userListProd = await API.get("pathMakerUtils","/utils/listusers");
         this.userList = userListProd.Users;
         console.log(this.userList);
       } catch(err) {
@@ -306,7 +306,7 @@ class Profile extends React.Component {
     }
     event.preventDefault();
     try{
-      const response = API.post("pathMaker", "/reparto", {
+      const response = API.post("pathMakerReparto", "/reparto", {
         body: content
       });
       console.log(response)
@@ -333,7 +333,7 @@ class Profile extends React.Component {
                         <img
                           alt="..."
                           className="rounded-circle"
-                          src={require("assets/img/theme/team-1-800x800.jpg")}
+                          src={require("assets/img/theme/user-800.jpg")}
                         />
                       </a>
                     </div>

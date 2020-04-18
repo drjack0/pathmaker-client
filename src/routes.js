@@ -38,7 +38,7 @@ var routes = [
   },
   {
     path: "/economy",
-    name: "Budget e Mensilità",
+    name: "Utils",
     icon: "ni ni-money-coins text-blue",
     component: Icons,
     layout: "/admin"

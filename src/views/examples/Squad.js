@@ -17,7 +17,9 @@
 */
 import React from "react";
 import {Route, Switch, Link} from "react-router-dom";
-import {API} from "aws-amplify"
+import {API,Storage} from "aws-amplify"
+
+import {s3UploadSq} from "libs/awsLib.js";
 
 
 // reactstrap components
@@ -57,6 +59,7 @@ import {
   InputGroupText,
   Form,
   InputGroupButtonDropdown,
+  Label
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.js";
@@ -71,8 +74,11 @@ class Squad extends React.Component {
       delConfirm: "",
       lavoraPer: "",
       note: "",
-      genere: ""
+      genere: "",
+      isLoading: true
     }
+    this.fileImgSquad = React.createRef();
+    this.fileImgURL = ""
   }
 
   validateDelForm = () => {
@@ -101,12 +107,15 @@ class Squad extends React.Component {
       genere = "M"
     }
 
+    const fileImg = await this.handleFileSubmitSquad();
+
     try{
-      const response = await API.put("pathMaker", `/squadriglie/${this.props.squad.squadriglia}`, {
+      const response = await API.put("pathMakerReparto", `/squadriglie/${this.props.squad.squadriglia}`, {
         body: {
           genere: this.state.genere.length > 0 ? genere : this.props.squad.genere,
           note: this.state.note.length > 0 ? this.state.note : this.props.squad.note,
           lavoraPer: this.state.lavoraPer.length > 0 ? this.state.lavoraPer : this.props.squad.lavoraPer,
+          imgSquad: fileImg !== null ? fileImg : "img"
         }
       });
       console.log(response);
@@ -118,10 +127,23 @@ class Squad extends React.Component {
 
   }
 
+  handleFileSubmitSquad = async () => {
+    try{
+      const img = this.fileImgSquad.current ? await s3UploadSq(this.fileImgSquad.current,this.props.squad.squadriglia) : null;
+      console.log(img);
+      return img;
+    } catch(err) {
+      console.log(err);
+    }
+  }
+  handleFileChangeImgSquad = (event) => {
+    this.fileImgSquad.current = event.target.files[0]
+  }
+
   handleSquadDel = async (event) => {
     event.preventDefault();
     try{
-      const response = await API.del("pathMaker",`/squadriglie/${this.props.squad.squadriglia}`);
+      const response = await API.del("pathMakerReparto",`/squadriglie/${this.props.squad.squadriglia}`);
       console.log(response);
       this.props.history.go(`/admin/squadriglie`);
     } catch(err){
@@ -226,7 +248,10 @@ class Squad extends React.Component {
     const date = temp.getDate() + "/" + (temp.getMonth()+1) + "/" + temp.getFullYear()
 
     const genere = this.props.squad.genere.toUpperCase() === "F" ? "Femminile" : "Maschile";
+    
     console.log(genere)
+
+    const imgURL=this.props.squadURL.find(x => x.squad === this.props.squad.squadriglia).URL
 
     return (
       <>
@@ -316,7 +341,7 @@ class Squad extends React.Component {
                         <Col className="col-auto">
                           <Media className="align-items-center">
                             <span className="avatar avatar-xl rounded-circle">
-                              <img alt="..." src={require("assets/img/theme/squadriglie/pantere.jpg")} />
+                              <img alt="..." src={imgURL/*"assets/img/theme/squadriglie/pantere.jpg"*/} />
                             </span>
                           </Media>
                         </Col>
@@ -418,11 +443,17 @@ class Squad extends React.Component {
                           <option>Maschile</option>
                         </Input>
                       </InputGroup>
-                    </FormGroup>                    
+                    </FormGroup>
+                    <FormGroup controlid="imgSquad" className="mb-3 mx-6">
+                      <Label>Immagine Squadriglia</Label>
+                      <InputGroup className="input-group-alternative">
+                        <Input accept="image/*" type="file" onChange={e => this.handleFileChangeImgSquad(e)}/>
+                      </InputGroup>
+                    </FormGroup>               
               </ModalBody>
               <ModalFooter>
                 <Button className="btn btn-white" type="submit">Modifica</Button>
-                <Button className="btn btn-link text-white ml-auto" /*color="secondary"*/ onClick={this.toggleSquadMod}>Elimina Squadriglia</Button>
+                <Button className="btn btn-link text-white ml-auto" /*color="secondary"*/ onClick={this.toggleSquadMod}>Indietro</Button>
               </ModalFooter>
               </Form> 
             </div>         

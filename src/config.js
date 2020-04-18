@@ -3,9 +3,13 @@ export default {
         REGION: "eu-central-1",
         BUCKET: "pathmaker-burocracy"
     },
-    apiGateway: {
+    apiGatewayReparto: {
         REGION: "eu-central-1",
-        URL: "https://uejnavlyul.execute-api.eu-central-1.amazonaws.com/prod"
+        URL: "https://21wvglylod.execute-api.eu-central-1.amazonaws.com/prod"
+    },
+    apiGatewayUtils: {
+        REGION: "eu-central-1",
+        URL: "https://fh1kobc8t8.execute-api.eu-central-1.amazonaws.com/prod"
     },
     cognito: {
         REGION: "eu-central-1",

@@ -24,7 +24,7 @@ import AdminNavbar from "components/Navbars/AdminNavbar.js";
 import AdminFooter from "components/Footers/AdminFooter.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 
-import { API } from "aws-amplify";
+import { API,Storage } from "aws-amplify";
 
 import routes from "routes.js";
 
@@ -53,8 +53,9 @@ class Admin extends React.Component {
       squad: [],
       budget: [],
       reparto: [],
-      loaded: false
-    }
+      loaded: false,
+    };
+    this.squadURL = []
   }
 
   componentDidMount(){
@@ -69,9 +70,19 @@ class Admin extends React.Component {
     (this.refs.mainPanel || {}).scrollTop = 0;
   }
 
+  
+
   loadSquad = async () => {
     try{
-      this.state.squad = await API.get("pathMaker","/squadriglie/scan")        
+      this.state.squad = await API.get("pathMakerReparto","/squadriglie/scan");
+      for(var i=0; i < this.state.squad.length; i++){
+        var imgString = "imgSquad/IMG-"+this.state.squad[i].squadriglia.toString();
+        console.log("IMG STRING",imgString)
+        this.squadURL.push({
+          squad: this.state.squad[i].squadriglia,
+          URL: await Storage.get(imgString)
+        })
+      }    
     } catch(err){
       alert(err);
       console.log(err);
@@ -80,7 +91,7 @@ class Admin extends React.Component {
 
   loadBudget = async () => {
     try{
-      this.state.budget = await API.get("pathMaker","/budget/scan")        
+      this.state.budget = await API.get("pathMakerUtils","/budget/scan")        
     } catch(err){
       alert(err);
       console.log(err);
@@ -89,7 +100,7 @@ class Admin extends React.Component {
 
   loadRagazzi = async () => {
     try{
-      this.state.reparto = await API.get("pathMaker","/reparto/scan")
+      this.state.reparto = await API.get("pathMakerReparto","/reparto/scan")
     } catch(err){
       alert(err);
       console.log(err);
@@ -116,6 +127,8 @@ class Admin extends React.Component {
     return filteredList;
   }
 
+  
+
   getRoutes = routes => {
     console.log("PROPS IN GETROUTES",this.props);
     return routes.map((prop, key) => {
@@ -126,7 +139,8 @@ class Admin extends React.Component {
             render = {props => <prop.component 
                                   squad = {this.state.squad}
                                   budget = {this.state.budget}
-                                  reparto= {this.state.reparto} {...this.props}/>}
+                                  reparto= {this.state.reparto} 
+                                  squadURL={this.squadURL} {...this.props}/>}
             key={key}
           />
         );
@@ -141,7 +155,7 @@ class Admin extends React.Component {
       return (
         <Route
           path={"/admin/squadriglia/"+sq.squadriglia.toLowerCase()}
-          render = {props => <Squad squad= {sq} squadMembers={this.filterBySquad(sq.squadriglia)} {...this.props}/> } key={key} />
+          render = {props => <Squad squad= {sq} squadURL={this.squadURL} squadMembers={this.filterBySquad(sq.squadriglia)} {...this.props}/> } key={key} />
       )
     })
   }
@@ -151,7 +165,7 @@ class Admin extends React.Component {
       return (
         <Route
           path={"/admin/eg/"+eg.censcode}
-          render = {props => <EG eg= {eg} squadList={this.state.squad} {...this.props}/> } key={key} />
+          render = {props => <EG eg= {eg} squadList={this.state.squad} squadURL={this.squadURL} {...this.props}/> } key={key} />
       )
     })
   }
