@@ -327,10 +327,12 @@ class Profile extends React.Component {
     console.log("CSV FRONTEND FUNCTION");
     try{
       const csv = this.fileCSV.current ? await s3UploadCSV(this.fileCSV.current) : null;
-      console.log("CSV",csv);
-      //await API.post("pathMakerUtils","import/csv")
-      return csv;
-
+      console.log("CSV:",csv);
+      if(csv !== null){
+        const res = await API.post("pathMakerUtils","/import/csv");
+        console.log(res);
+        this.props.history.go("/admin/index")
+      }
     } catch(err){
       console.log(err)
     }

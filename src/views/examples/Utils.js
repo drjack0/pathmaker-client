@@ -249,7 +249,7 @@ class Utils extends React.Component {
   };
 
   renderAnagraficaTable = () => {
-    return this.state.backupAnagraficaList.sort((a,b) => (a.nome < b.nome) ? 1 : -1).map((x,i) => {
+    return this.state.backupAnagraficaList.sort((a,b) => (a.nome > b.nome) ? 1 : -1).map((x,i) => {
       const {nome, cognome, censcode, recapiti} = x;
       return (
         <tr key={censcode}>
@@ -265,7 +265,7 @@ class Utils extends React.Component {
   }
 
   renderMensiliTable = () => {
-    return this.state.backupMensiliList.sort((a,b) => (a.nome < b.nome) ? 1 : -1).map((x,i) => {
+    return this.state.backupMensiliList.sort((a,b) => (a.nome > b.nome) ? 1 : -1).map((x,i) => {
       const {nome, cognome, censcode, mensili} = x;
       return (
         <tr key={censcode}>
@@ -287,7 +287,7 @@ class Utils extends React.Component {
   }
 
   renderSentieroTable = () => {
-    return this.state.backupSentieroList.sort((a,b) => (a.nome < b.nome) ? 1 : -1).map((x,i) => {
+    return this.state.backupSentieroList.sort((a,b) => (a.nome > b.nome) ? 1 : -1).map((x,i) => {
       const {nome, cognome, censcode, sentiero} = x;
       return (
         <tr key={censcode}>
@@ -303,7 +303,7 @@ class Utils extends React.Component {
   }
 
   renderGenitoriTable = () => {
-    return this.state.backupGenitoriList.sort((a,b) => (a.nome < b.nome) ? 1 : -1).map((x,i) => {
+    return this.state.backupGenitoriList.sort((a,b) => (a.nome > b.nome) ? 1 : -1).map((x,i) => {
       const {nome, cognome, censcode, mamma, papa} = x;
       return (
         <tr key={censcode}>
@@ -320,7 +320,7 @@ class Utils extends React.Component {
   }
 
   renderBurocraziaTable = () => {
-    return this.state.backupBurocraziaList.sort((a,b) => (a.nome < b.nome) ? 1 : -1).map((x,i) => {
+    return this.state.backupBurocraziaList.sort((a,b) => (a.nome > b.nome) ? 1 : -1).map((x,i) => {
       const {nome, cognome, censcode, burocrazia} = x;
       return (
         <tr key={censcode}>
