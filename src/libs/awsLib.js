@@ -10,7 +10,7 @@ export async function s3UploadAutorizzazione(file,censcode,cognome,nome){
     return stored.key
 }
 
-export async function s3UploadCensimento(file,censcode,nome,cognome){
+export async function s3UploadCensimento(file,censcode,cognome,nome){
     const filename = `censimenti/Censimento-${censcode}-${cognome}-${nome}`;
     
     const stored = await Storage.put(filename, file, {
@@ -19,7 +19,7 @@ export async function s3UploadCensimento(file,censcode,nome,cognome){
     return stored.key
 }
 
-export async function s3UploadPrivacy(file,censcode,nome,cognome){
+export async function s3UploadPrivacy(file,censcode,cognome,nome){
     const filename = `privacy/Privacy-${censcode}-${cognome}-${nome}`;
     
     const stored = await Storage.put(filename, file, {
@@ -28,7 +28,7 @@ export async function s3UploadPrivacy(file,censcode,nome,cognome){
     return stored.key
 }
 
-export async function s3UploadSS(file,censcode,nome,cognome){
+export async function s3UploadSS(file,censcode,cognome,nome){
     const filename = `schede/SS-${censcode}-${cognome}-${nome}`;
     
     const stored = await Storage.put(filename, file, {
@@ -37,7 +37,7 @@ export async function s3UploadSS(file,censcode,nome,cognome){
     return stored.key
 }
 
-export async function s3UploadTS(file,censcode,nome,cognome){
+export async function s3UploadTS(file,censcode,cognome,nome){
     const filename = `tessere/TS-${censcode}-${cognome}-${nome}`;
     
     const stored = await Storage.put(filename, file, {

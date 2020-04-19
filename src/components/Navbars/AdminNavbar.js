@@ -50,7 +50,7 @@ class AdminNavbar extends React.Component {
             >
               {this.props.brandText}
             </Link>
-            <Form className="navbar-search navbar-search-dark form-inline mr-3 d-none d-md-flex ml-lg-auto">
+            {/*<Form className="navbar-search navbar-search-dark form-inline mr-3 d-none d-md-flex ml-lg-auto">
               <FormGroup className="mb-0">
                 <InputGroup className="input-group-alternative">
                   <InputGroupAddon addonType="prepend">
@@ -61,7 +61,7 @@ class AdminNavbar extends React.Component {
                   <Input placeholder="Cercando non si trova nulla..." type="text" />
                 </InputGroup>
               </FormGroup>
-            </Form>
+            </Form>*/}
             <Nav className="align-items-center d-none d-md-flex" navbar>
               <UncontrolledDropdown nav>
                 <DropdownToggle className="pr-0" nav>
@@ -86,10 +86,6 @@ class AdminNavbar extends React.Component {
                   <DropdownItem to="/admin/user-profile" tag={Link}>
                     <i className="ni ni-single-02" />
                     <span>Profilo</span>
-                  </DropdownItem>
-                  <DropdownItem to="/admin/tasks" tag={Link}>
-                    <i className="ni ni-calendar-grid-58" />
-                    <span>Tasks</span>
                   </DropdownItem>
                   <DropdownItem to="/admin/index" tag={Link}>
                     <i className="ni ni-support-16" />

@@ -213,7 +213,7 @@ class Profile extends React.Component {
   handlePapaModal = async (event) => {
     event.preventDefault();
     try{
-      const response = await API.put("pathMakerReparto", `/reparto/mamma/${this.props.eg.censcode}`, {
+      const response = await API.put("pathMakerReparto", `/reparto/papa/${this.props.eg.censcode}`, {
         body: {
           nomePapa: this.state.nomePapaEG.length > 0 ? this.state.nomePapaEG : this.props.eg.papa.nomePapa,
           cellPapa: this.state.cellPapaEG.length > 0 ? this.state.cellPapaEG : this.props.eg.papa.cellPapa,
@@ -422,16 +422,16 @@ class Profile extends React.Component {
     event.preventDefault()
     const typeString = type.toString();
     const formatString = format.toString();
-    const res = await Storage.get(`${typeString}/${formatString}-${this.props.eg.censcode}-${this.props.eg.nome}-${this.props.eg.cognome}`).then(data => {return data});
+    const res = await Storage.get(`${typeString}/${formatString}-${this.props.eg.censcode}-${this.props.eg.cognome}-${this.props.eg.nome}`).then(data => {return data});
     console.log(res);
     window.open(res.toString());
   }
   removeMemberDocuments = async() => {
-    const censimentoString = `censimenti/Censimento-${this.props.eg.censcode}-${this.props.eg.nome}-${this.props.eg.cognome}`;
-    const autorizzazioneString = `autorizzazioni/Autorizzazione-${this.props.eg.censcode}-${this.props.eg.nome}-${this.props.eg.cognome}`;
-    const privacyString = `privacy/Privacy-${this.props.eg.censcode}-${this.props.eg.nome}-${this.props.eg.cognome}`;
-    const ssString = `schede/SS-${this.props.eg.censcode}-${this.props.eg.nome}-${this.props.eg.cognome}`;
-    const tsString = `tessere/TS-${this.props.eg.censcode}-${this.props.eg.nome}-${this.props.eg.cognome}`;
+    const censimentoString = `censimenti/Censimento-${this.props.eg.censcode}-${this.props.eg.cognome}-${this.props.eg.nome}`;
+    const autorizzazioneString = `autorizzazioni/Autorizzazione-${this.props.eg.censcode}-${this.props.eg.cognome}-${this.props.eg.nome}`;
+    const privacyString = `privacy/Privacy-${this.props.eg.censcode}-${this.props.eg.cognome}-${this.props.eg.nome}`;
+    const ssString = `schede/SS-${this.props.eg.censcode}-${this.props.eg.cognome}-${this.props.eg.nome}`;
+    const tsString = `tessere/TS-${this.props.eg.censcode}-${this.props.eg.cognome}-${this.props.eg.nome}`;
 
     const resCensimento = await Storage.remove(censimentoString).then(data => {return data});
     const resAutorizzazione = await Storage.remove(autorizzazioneString).then(data => {return data});

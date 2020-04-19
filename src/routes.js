@@ -24,7 +24,7 @@ import Tables from "views/examples/Tables.js";
 import Squadriglie from "views/examples/Squadriglie.js";
 import Squad from "views/examples/Squad.js";
 import EG from "views/examples/Eg.js";
-import Icons from "views/examples/Icons.js";
+import Utils from "views/examples/Utils.js";
 import ForgotPassword from "views/examples/ForgotPassword.js"
 import ConfirmRegistration from "views/examples/ConfirmRegistration.js"
 
@@ -37,10 +37,10 @@ var routes = [
     layout: "/admin"
   },
   {
-    path: "/economy",
+    path: "/utils",
     name: "Utils",
     icon: "ni ni-money-coins text-blue",
-    component: Icons,
+    component: Utils,
     layout: "/admin"
   },
   {

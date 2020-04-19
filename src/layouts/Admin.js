@@ -77,7 +77,6 @@ class Admin extends React.Component {
       this.state.squad = await API.get("pathMakerReparto","/squadriglie/scan");
       for(var i=0; i < this.state.squad.length; i++){
         var imgString = "imgSquad/IMG-"+this.state.squad[i].squadriglia.toString();
-        console.log("IMG STRING",imgString)
         this.squadURL.push({
           squad: this.state.squad[i].squadriglia,
           URL: await Storage.get(imgString)

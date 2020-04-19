@@ -213,7 +213,9 @@ class Squad extends React.Component {
                 <i className={badge} />
               </div>
               <Media>
-                <span className="mb-0 text-sm">{nome + " " + cognome}</span>
+                <span className="mb-0 text-sm"><Link to={"/admin/eg/"+ censcode}>
+                    {nome}{' '}{cognome}
+                  </Link></span>
               </Media>
             </Media>      
           </th>
@@ -221,22 +223,7 @@ class Squad extends React.Component {
           <td className="text-left">{sentiero.incarico}</td>
           <td className="text-left">{sentiero.lavoraPer}</td>
           <td className="text-left">{sentiero.camminaPer}</td>
-          <td className="text-left">{date}</td>
-          <td className="text-right">
-            <UncontrolledDropdown>
-              <DropdownToggle className="btn-icon-only text-light" role="button" size="sm" color="" onClick={e => e.preventDefault}>
-                <i className="fas fa-ellipsis-v"/>
-              </DropdownToggle>
-              <DropdownMenu className="dropdown-menu-arrow" right>
-                <DropdownItem>
-                  <Link to={"/admin/eg/"+ censcode}>
-                    Controlla Scheda
-                  </Link>
-                </DropdownItem>
-              </DropdownMenu>
-            </UncontrolledDropdown>
-          </td>
-          
+          <td className="text-left">{date}</td>          
         </tr>
       )
     })
@@ -387,7 +374,6 @@ class Squad extends React.Component {
                       <th scope="col">Lavora Per</th>
                       <th scope="col">Cammina per</th>
                       <th scope="col">Ultimo Aggiornamento</th>
-                      <th scope="col"></th>
                     </tr>
                   </thead>
                   <tbody>

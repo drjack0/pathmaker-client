@@ -161,10 +161,6 @@ class Sidebar extends React.Component {
                   <i className="ni ni-single-02" />
                   <span>Profilo</span>
                 </DropdownItem>
-                <DropdownItem to="/admin/tasks" tag={Link}>
-                  <i className="ni ni-settings-gear-65" />
-                  <span>Tasks</span>
-                </DropdownItem>
                 <DropdownItem to="/admin/index" tag={Link}>
                   <i className="ni ni-calendar-grid-58" />
                   <span>Home</span>
@@ -208,7 +204,7 @@ class Sidebar extends React.Component {
               </Row>
             </div>
             {/* Form */}
-            <Form className="mt-4 mb-3 d-md-none">
+            {/*<Form className="mt-4 mb-3 d-md-none">
               <InputGroup className="input-group-rounded input-group-merge">
                 <Input
                   aria-label="Search"
@@ -222,7 +218,7 @@ class Sidebar extends React.Component {
                   </InputGroupText>
                 </InputGroupAddon>
               </InputGroup>
-            </Form>
+            </Form>*/}
             {/* Navigation */}
             <Nav navbar>{this.createLinks(routes)}</Nav>
             {/* Divider */}

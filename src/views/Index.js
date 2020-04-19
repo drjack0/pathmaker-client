@@ -131,7 +131,7 @@ class Index extends React.Component {
   //BUDGET FUNCTION SECTION
 
   renderBudgetTable = () => {
-    return this.props.budget.map((bud,i) => {
+    return this.props.budget.sort((a,b) => (a.updatedAt < b.updatedAt) ? 1 : -1).map((bud,i) => {
       const {cashId, nomeOp, updatedAt, typeOp, amount} = bud;     
       const temp = new Date(updatedAt);
       const date = temp.getDate() + "/" + (temp.getMonth()+1) + "/" + temp.getFullYear()
@@ -144,6 +144,9 @@ class Index extends React.Component {
             <td>
               <i className="fas fa-plus text-success mr-3" />{amount}
             </td>
+            <td>
+            <i className="fas fa-trash-alt text-red mr-3" onClick={e => this.handleBudgetDelete(e,cashId)} style={{cursor: "pointer"}}/>
+            </td> 
           </tr>
         )
       } else if(typeOp === "-" && temp.getMonth() == new Date(Date.now()).getMonth()){
@@ -153,6 +156,9 @@ class Index extends React.Component {
             <td>{date}</td>
             <td>
               <i className="fas fa-minus text-warning mr-3" />{amount}
+            </td>
+            <td>
+              <i className="fas fa-trash-alt text-red mr-3" onClick={e => this.handleBudgetDelete(e,cashId)} style={{cursor: "pointer"}}/>
             </td>
           </tr>
         )
@@ -193,6 +199,18 @@ class Index extends React.Component {
     } catch(err){
       alert(err);
       console.log(err);
+    }
+  }
+
+  handleBudgetDelete = async (event,cashId) => {
+    event.preventDefault();
+    try{
+      const response = await API.del("pathMakerUtils","/budget/"+cashId.toString());
+      console.log(response);
+      this.props.history.go("/admin/index");
+    } catch(err){
+      alert(err);
+      console.log(err)
     }
   }
 
@@ -274,6 +292,7 @@ class Index extends React.Component {
                       <th scope="col">Operazione</th>
                       <th scope="col">Data</th>
                       <th scope="col">Importo</th>
+                      <th scope="col"></th>
                     </tr>
                   </thead>
                   <tbody>
