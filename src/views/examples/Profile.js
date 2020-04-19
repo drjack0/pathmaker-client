@@ -44,13 +44,15 @@ import {
   DropdownItem,
   Table,
   Link,
-  Collapse
+  Collapse,
+  Label
 } from "reactstrap";
 // core components
 import UserHeader from "components/Headers/UserHeader.js";
-import { Auth, API } from "aws-amplify";
+import { Auth, API, Storage } from "aws-amplify";
 import ReactDatetimeClass from "react-datetime";
 import ReactDatetime from "react-datetime";
+import {s3UploadCSV, s3UploadMainCSV} from "libs/awsLib.js";
 
 class Profile extends React.Component {
   constructor(props){
@@ -95,7 +97,7 @@ class Profile extends React.Component {
       squadrigliaEG: ""
     }
     this.userList = [];
-    
+    this.fileCSV = React.createRef();
   }
 
   toggleShowUsersModal = async () => {
@@ -316,6 +318,29 @@ class Profile extends React.Component {
       console.log(err);
     }
   }
+
+  handleFileChangeCSV = (event) => {
+    this.fileCSV.current = event.target.files[0]
+  }
+  handleCSV = async (event) => {
+    event.preventDefault()
+    console.log("CSV FRONTEND FUNCTION");
+    try{
+      const csv = this.fileCSV.current ? await s3UploadCSV(this.fileCSV.current) : null;
+      console.log("CSV",csv);
+      //await API.post("pathMakerUtils","import/csv")
+      return csv;
+
+    } catch(err){
+      console.log(err)
+    }
+  }
+  getMainCSV = async (event) => {
+    event.preventDefault()
+    const res = await Storage.get('MAIN.csv').then(data => {return data}).catch(err => {console.log(err)});
+    console.log(res);
+    window.open(res.toString());
+  }
  
   render() {
     return (
@@ -341,15 +366,14 @@ class Profile extends React.Component {
                 </Row>
                 <CardHeader className="text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
                   <div className="d-flex justify-content-between">                    
-                    <Button
+                    {/*<Button
                       className="float-right"
                       color="default"
                       href="#pablo"
-                      /*onClick={e => e.preventDefault()}*/
                       size="sm"
                     >
                       Cambia Immagine
-                    </Button>
+                    </Button>*/}
                   </div>
                 </CardHeader>
                 <CardBody className="pt-0 pt-md-4">
@@ -400,6 +424,32 @@ class Profile extends React.Component {
                       </div>
                     </Col>
                   </Row>
+
+                  <hr/>
+
+                  <Row>
+                    <Col>
+                      <div className="card-profile-stats d-flex justify-content-center">
+                      <Form role="form" onSubmit={e => this.handleCSV(e)}>
+                        <div className="form-row align-items-center">
+                          <div className="col-auto">
+                            <FormGroup controlid="fogliCensimento" className="mb-3 mx-2">
+                              <Label>Importa dati Reparto da CSV</Label>
+                              <InputGroup className="input-group-alternative">
+                                <Input accept=".csv" type="file" onChange={e => this.handleFileChangeCSV(e)}/>
+                              </InputGroup>
+                              <small id="emailHelp" className="form-text text-muted" style={{cursor: "pointer",color: "red"}} onClick={e => this.getMainCSV(e)}><u>scarica qui la tabella CSV</u></small>
+                            </FormGroup>
+                          </div>
+                          <div className="col-auto">
+                            <Button outline color="info" className="btn align-self-center" type="submit">Importa</Button>
+                          </div>
+                        </div>
+                      </Form>
+                      </div>
+                    </Col>
+                  </Row>
+
                 </CardBody>
                 
               </Card>

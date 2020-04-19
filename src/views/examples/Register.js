@@ -166,7 +166,11 @@ export default function Register(props) {
                       </InputGroupText>
                     </InputGroupAddon>
                     <Input placeholder="Password" type="password" onChange = {e => setPassword(e.target.value)}/>
+                    
                   </InputGroup>
+                  <small id="emailHelp" class="form-text text-muted">La Password deve contenere almeno 8 Caratteri, fra cui:</small>
+                  <small id="emailHelp" class="form-text text-muted">-almeno una lettera Maiuscola</small>
+                  <small id="emailHelp" class="form-text text-muted">-almeno un Numero</small>
                 </FormGroup>
                 <FormGroup controlid="confirmPassword">
                   <InputGroup className="input-group-alternative">

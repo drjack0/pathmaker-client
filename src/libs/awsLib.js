@@ -54,3 +54,17 @@ export async function s3UploadSq(file,squad){
     });
     return stored.key
 }
+
+export async function s3UploadCSV(file){
+    const filename = "csv/IMPORT-CSV";
+    const stored = await Storage.put(filename,file,{
+        contentType: file.type
+    });
+    return stored.key
+}
+
+export async function s3UploadMainCSV(file){
+    const filename = "MAIN.csv";
+    const stored = await Storage.put(filename,file);
+    return stored.key
+}
