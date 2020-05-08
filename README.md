@@ -12,5 +12,5 @@ Argon Dashboard React is built with over 100 individual components, giving you t
 ## Quick start
 
 - Clone the repo: `git clone https://github.com/drjack0/pathmaker-client.git`.
-- `npm install` && `npm start`
+- `npm install && npm start`
 
