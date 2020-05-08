@@ -6,14 +6,10 @@
   "keywords": [
     "react",
     "reactjs",
-    "argon",
-    "argon-react",
     "dashboard",
     "dashboard-react",
-    "argon-dashboard",
-    "argon-dashboard-react"
   ],
-  "author": "Creative Tim",
+  "author": "DrJack0",
   "license": "MIT",
   "scripts": {
     "start": "react-scripts start",
