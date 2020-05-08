@@ -1,23 +1,13 @@
 /*!
 
 =========================================================
-* Argon Dashboard React - v1.1.0
+* PathMaker DashBoard React
 =========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2019 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
 import React from "react";
-import {Route, Switch, Link} from "react-router-dom";
-import {API,Storage} from "aws-amplify"
+import {Link} from "react-router-dom";
+import {API} from "aws-amplify"
 
 import {s3UploadSq} from "libs/awsLib.js";
 
@@ -25,29 +15,15 @@ import {s3UploadSq} from "libs/awsLib.js";
 // reactstrap components
 import {
   Button,
-  Badge,
   Card,
   CardHeader,
-  CardFooter,
-  DropdownMenu,
-  DropdownItem,
-  UncontrolledDropdown,
-  DropdownToggle,
   Media,
-  Pagination,
-  PaginationItem,
-  PaginationLink,
-  Progress,
   Table,
   Container,
   Row,
   Col,
-  UncontrolledTooltip,
   CardBody,
-  CardImg,
-  CardImgOverlay,
   CardTitle,
-  CardText,
   Modal,
   ModalHeader,
   ModalBody,
@@ -58,11 +34,10 @@ import {
   InputGroupAddon,
   InputGroupText,
   Form,
-  InputGroupButtonDropdown,
   Label
 } from "reactstrap";
-// core components
-import Header from "components/Headers/Header.js";
+
+// css custom components
 import "assets/css/custom_hover.css";
 
 class Squad extends React.Component {
@@ -130,7 +105,6 @@ class Squad extends React.Component {
   handleFileSubmitSquad = async () => {
     try{
       const img = this.fileImgSquad.current ? await s3UploadSq(this.fileImgSquad.current,this.props.squad.squadriglia) : null;
-      console.log(img);
       return img;
     } catch(err) {
       console.log(err);
@@ -230,13 +204,10 @@ class Squad extends React.Component {
   }
 
   render() {
-    console.log("PROPS SQUAD ROUTE", this.props);
     const temp = new Date(this.props.squad.updatedAt);
     const date = temp.getDate() + "/" + (temp.getMonth()+1) + "/" + temp.getFullYear()
 
     const genere = this.props.squad.genere.toUpperCase() === "F" ? "Femminile" : "Maschile";
-    
-    console.log(genere)
 
     const imgURL=this.props.squadURL.find(x => x.squad === this.props.squad.squadriglia).URL
 
@@ -245,23 +216,18 @@ class Squad extends React.Component {
         <div className="header bg-gradient-info pb-8 pt-5 pt-md-8">
           <Container fluid>
             <div className="header-body">
-              {/* Card stats */}
               <Row>
-
                 {/* BLOCCO "LAVORA PER" */}
                 <Col lg="6" xl="4">
                   <Card className="card-stats mb-4 mb-xl-0">
                     <CardBody>
                       <Row>
                         <div className="col">
-                          <CardTitle
-                            tag="h5"
-                            className="text-uppercase text-muted mb-0"
-                          >
+                          <CardTitle tag="h5" className="text-uppercase text-muted mb-0">
                             Lavora Per...
                           </CardTitle>
                           <span className="h2 font-weight-bold mb-0">
-                          {this.props.squad.lavoraPer}
+                            {this.props.squad.lavoraPer}
                           </span>
                         </div>
                         <Col className="col-auto">
@@ -285,10 +251,7 @@ class Squad extends React.Component {
                     <CardBody>
                       <Row>
                         <div className="col">
-                          <CardTitle
-                            tag="h5"
-                            className="text-uppercase text-muted mb-0"
-                          >
+                          <CardTitle tag="h5" className="text-uppercase text-muted mb-0">
                             Note...
                           </CardTitle>
                           <span className="h2 font-weight-bold mb-0">
@@ -317,10 +280,7 @@ class Squad extends React.Component {
                     <CardBody>
                       <Row>
                         <div className="col">
-                          <CardTitle
-                            tag="h5"
-                            className="text-uppercase text-muted mb-0"
-                          >
+                          <CardTitle tag="h5" className="text-uppercase text-muted mb-0">
                             Squadriglia {genere}
                           </CardTitle>
                           <span className="text-green h2 font-weight-bold mb-0">{this.props.squad.squadriglia.toUpperCase()}</span>
@@ -344,7 +304,6 @@ class Squad extends React.Component {
                     </CardBody>
                   </Card>
                 </Col>
-
               </Row>
             </div>
           </Container>
@@ -352,9 +311,6 @@ class Squad extends React.Component {
 
 
         <Container className="mt--7" fluid>
-          <Row> 
-          </Row>
-
           <Row className="mt-5">
             <Col className="mb-5 mb-xl-0" xl="12">
               <Card className="shadow">
@@ -383,73 +339,72 @@ class Squad extends React.Component {
               </Card>
             </Col>
           </Row>
+        </Container>
 
-
-          {/*UPDATE SQUAD MODAL*/}
-          <Modal isOpen={this.state.modalSquadMod} toggle={e => this.toggleSquadMod} className="modal-dialog modal-danger modal-dialog-centered modal-">
-            <div className="modal-content bg-gradient-danger">
-              <ModalHeader toggle={this.toggleSquadMod} />
-              <Form role="form" onSubmit={this.handleSquadMod}>
+        {/*UPDATE SQUAD MODAL*/}
+        <Modal isOpen={this.state.modalSquadMod} toggle={e => this.toggleSquadMod} className="modal-dialog modal-danger modal-dialog-centered modal-">
+          <div className="modal-content bg-gradient-danger">
+            <ModalHeader toggle={this.toggleSquadMod} />
+            <Form role="form" onSubmit={this.handleSquadMod}>
               <ModalBody>
                 <div className="py-3 text-center">
                   <i className="ni ni-button-power ni-3x"></i>
                   <h4 className="heading mt-4">Squadriglia {this.props.squad.squadriglia}</h4>
                   <p>Modifica i Dati della squadriglia</p>
                 </div>
-                  
-                    <FormGroup controlid="lavoraPer" className="mb-3 mx-6">
-                      <InputGroup className="input-group-alternative">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                            <i className="ni ni-spaceship" />
-                          </InputGroupText>
-                        </InputGroupAddon>
-                        <Input placeholder={"Lavora Per: " + this.props.squad.lavoraPer} type="text" onChange={e => this.setState({lavoraPer: e.target.value})}/>
-                      </InputGroup>
-                    </FormGroup>
-                    <FormGroup controlid="note" className="mb-3 mx-6">
-                      <InputGroup className="input-group-alternative">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                            <i className="ni ni-bullet-list-67" />
-                          </InputGroupText>
-                        </InputGroupAddon>
-                        <Input placeholder={"Note: " + this.props.squad.note} type="text" onChange={e => this.setState({note: e.target.value})}/>
-                      </InputGroup>
-                    </FormGroup>
-                    <FormGroup controlid="genere" className="mb-3 mx-6">
-                      <InputGroup className="input-group-alternative">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                            <i className="ni ni-active-40" />
-                          </InputGroupText>
-                        </InputGroupAddon>
-                        <Input placeholder={"Genere: " + this.props.squad.genere} type="select" required onChange={e => this.setState({genere: e.target.value})}>
-                          <option>Femminile</option>
-                          <option>Maschile</option>
-                        </Input>
-                      </InputGroup>
-                    </FormGroup>
-                    <FormGroup controlid="imgSquad" className="mb-3 mx-6">
-                      <Label>Immagine Squadriglia</Label>
-                      <InputGroup className="input-group-alternative">
-                        <Input accept="image/*" type="file" onChange={e => this.handleFileChangeImgSquad(e)}/>
-                      </InputGroup>
-                    </FormGroup>               
+                <FormGroup controlid="lavoraPer" className="mb-3 mx-6">
+                  <InputGroup className="input-group-alternative">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="ni ni-spaceship" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input placeholder={"Lavora Per: " + this.props.squad.lavoraPer} type="text" onChange={e => this.setState({lavoraPer: e.target.value})}/>
+                  </InputGroup>
+                </FormGroup>
+                <FormGroup controlid="note" className="mb-3 mx-6">
+                  <InputGroup className="input-group-alternative">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="ni ni-bullet-list-67" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input placeholder={"Note: " + this.props.squad.note} type="text" onChange={e => this.setState({note: e.target.value})}/>
+                  </InputGroup>
+                </FormGroup>
+                <FormGroup controlid="genere" className="mb-3 mx-6">
+                  <InputGroup className="input-group-alternative">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="ni ni-active-40" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input placeholder={"Genere: " + this.props.squad.genere} type="select" required onChange={e => this.setState({genere: e.target.value})}>
+                      <option>Femminile</option>
+                      <option>Maschile</option>
+                    </Input>
+                  </InputGroup>
+                </FormGroup>
+                <FormGroup controlid="imgSquad" className="mb-3 mx-6">
+                  <Label>Immagine Squadriglia</Label>
+                  <InputGroup className="input-group-alternative">
+                    <Input accept="image/*" type="file" onChange={e => this.handleFileChangeImgSquad(e)}/>
+                  </InputGroup>
+                </FormGroup>               
               </ModalBody>
               <ModalFooter>
                 <Button className="btn btn-white" type="submit">Modifica</Button>
                 <Button className="btn btn-link text-white ml-auto" /*color="secondary"*/ onClick={this.toggleSquadMod}>Indietro</Button>
               </ModalFooter>
-              </Form> 
-            </div>         
-          </Modal>
+            </Form> 
+          </div>         
+        </Modal>
 
-          {/*DELETE SQUAD MODAL*/}
-          <Modal isOpen={this.state.modalSquadDel} toggle={e => this.toggleSquadDel} className="modal-dialog modal-danger modal-dialog-centered modal-">
-            <div className="modal-content bg-gradient-danger">
-              <ModalHeader toggle={this.toggleSquadDel} />
-              <Form role="form" onSubmit={this.handleSquadDel}>
+        {/*DELETE SQUAD MODAL*/}
+        <Modal isOpen={this.state.modalSquadDel} toggle={e => this.toggleSquadDel} className="modal-dialog modal-danger modal-dialog-centered modal-">
+          <div className="modal-content bg-gradient-danger">
+            <ModalHeader toggle={this.toggleSquadDel} />
+            <Form role="form" onSubmit={this.handleSquadDel}>
               <ModalBody>
                 <div className="py-3 text-center">
                   <i className="ni ni-settings-gear-65 ni-3x"></i>
@@ -457,28 +412,24 @@ class Squad extends React.Component {
                   <p>Sei sicuro di voler eliminare la squadriglia?</p>
                   <p>Per confermare, inserisci qui sotto la parola "delete" e invia la richiesta!</p>
                 </div>
-                  
-                    <FormGroup controlid="lavoraPer" className="mb-3 mx-6">
-                      <InputGroup className="input-group-alternative">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                            <i className="ni ni-tag" />
-                          </InputGroupText>
-                        </InputGroupAddon>
-                        <Input type="text" onChange={e => this.setState({delConfirm: e.target.value})}/>
-                      </InputGroup>
-                    </FormGroup>
-
-                    </ModalBody>
+                <FormGroup controlid="lavoraPer" className="mb-3 mx-6">
+                  <InputGroup className="input-group-alternative">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="ni ni-tag" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input type="text" onChange={e => this.setState({delConfirm: e.target.value})}/>
+                  </InputGroup>
+                </FormGroup>
+              </ModalBody>
               <ModalFooter>
                 <Button className="btn btn-white" type="submit" disabled={!this.validateDelForm()}>Elimina Squadriglia</Button>
                 <Button className="btn btn-link text-white ml-auto" /*color="secondary"*/ onClick={this.toggleSquadDel}>Indietro</Button>
               </ModalFooter>
-              </Form> 
-            </div>         
-          </Modal>
-
-        </Container>
+            </Form> 
+          </div>         
+        </Modal>
       </>
     );
   }

@@ -1,18 +1,8 @@
 /*!
 
 =========================================================
-* Argon Dashboard React - v1.1.0
+* PathMaker DashBoard React
 =========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2019 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
 import React, {useState, useEffect} from "react";
@@ -83,35 +73,13 @@ function App (props){
   const [userBranca, setUserBranca] = useState("");
   const [userDescrizione, setUserDescrizione] = useState("");
 
-  /*const checkUser = () => {
-    console.log("checkUser function");
-    Auth.currentAuthenticatedUser()
-        .then(data => {
-          if(data){
-            console.log("PROMISE DATA: ", data);
-            console.log(data.attributes.email, data.attributes["custom:nome"] ,data.attributes['custom:cognome']);
-            setUserNome(data.attributes["custom:nome"]);
-            setUserCognome(data.attributes['custom:cognome']);
-            setUserEmail(data.attributes['custom:cognome']);
-            setCheck(true);
-            console.log("SETCHECK INSIDE ASYNC CURRENT SESSION", check)
-          } else {
-            console.log("NO USER RESPONSE")
-          }
-        })
-        .catch(err => console.log(err));
-  }*/
-
   async function checkUser() {
-    console.log("checkUser function");
 
     try{
       const data = await Auth.currentAuthenticatedUser({
         bypassCache: true
       });
-      console.log("PROMISE DATA ", data);
       if(data){
-        console.log(data.attributes.email, data.attributes["custom:nome"] ,data.attributes['custom:cognome']);
         setUserNome(data.attributes["custom:nome"]);
         setUserCognome(data.attributes['custom:cognome']);
         setUserEmail(data.attributes.email);
@@ -121,7 +89,6 @@ function App (props){
         setUserBranca(data.attributes['custom:branca']);
         setUserDescrizione(data.attributes['custom:descrizione']);
         setCheck(true);
-        console.log("SETCHECK INSIDE ASYNC CURRENT SESSION", check)
       } else {
         console.log("NO USER RESPONSE")
       }      
@@ -132,7 +99,6 @@ function App (props){
   }
 
   useEffect(()=>{
-    console.log("Chiamata da useEffect")
     if(!check){
       checkUser();
     } else {
@@ -141,8 +107,6 @@ function App (props){
   },[])
 
   const handleLoginApp = (historyBack,email,nome,cognome,others) => {
-    console.log("HandleLoginApp");
-    console.log("DATA FROM LOGIN PAGE",email,cognome,nome);
     setCheck(true);
     setIsAuthenticating(false);
     setUserNome(nome);
@@ -157,9 +121,7 @@ function App (props){
   }
 
   const handleLogout = (prop,e) => {
-    console.log("HANDLE LOGOUT");
     e.preventDefault();
-    console.log(prop);
     Auth.signOut()
         .then(data => {
           console.log(data)
@@ -173,7 +135,6 @@ function App (props){
           setUserCodiceCensimento("");
           setUserBranca("");
           setUserDescrizione("");
-          console.log("LOGOUT OK, GO AWAY BYE")
           prop.history.go("/auth/login")
         })
         .catch(err => console.log("ERROR CATCHING LOGOUT ", err))
@@ -183,8 +144,6 @@ function App (props){
     !isAuthenticating && 
     <BrowserRouter>
     <Switch>
-      {/*<Route path="/admin" render={props => <AdminLayout {...props} /> } />
-      <Route path="/auth" render={props => <AuthLayout {...props} /> } />*/}
       <ProtectedRoute path="/admin" check={check} 
                                     handleLogout={handleLogout} 
                                     user = {{
@@ -199,21 +158,12 @@ function App (props){
                                     }}
                                     component={AdminLayout} />
       <LoginRoute path="/auth" check={check} handleLoginApp={handleLoginApp} component={AuthLayout}  />
-
-      {/*<Route path="/auth" handleLoginApp={handleLoginApp}
-                          render={props => <AuthLayout {...props} 
-                          check={check.toString()}
-                          handleLoginApp={handleLoginApp}                         
-    /> } />*/}
       <Redirect from="/" to="/auth/login" />
     </Switch>
   </BrowserRouter>
   );
-
 }
-
 export default withRouter(App);
-
 
 ReactDOM.render(
   <App/>,  

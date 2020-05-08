@@ -1,52 +1,33 @@
 /*!
 
 =========================================================
-* Argon Dashboard React - v1.1.0
+* PathMaker DashBoard React
 =========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2019 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
+
 import React from "react";
 import { Route, Switch, Redirect, withRouter } from "react-router-dom";
+
 // reactstrap components
 import { Container } from "reactstrap";
+
 // core components
 import AdminNavbar from "components/Navbars/AdminNavbar.js";
 import AdminFooter from "components/Footers/AdminFooter.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 
+//amplify library
 import { API,Storage } from "aws-amplify";
 
+//route component
 import routes from "routes.js";
 
+//other components
 import Squad from "views/examples/Squad.js"
 import EG from "views/examples/Eg.js";
 
 class Admin extends React.Component {
-  
-  /*componentDidMount() {
-    Auth.currentUserInfo().then(data =>{
-      console.log(data);
-      this.setState({
-        username: this.data.username,
-
-      })
-    }).catch(err => console.log("CURRENT USER INFO: ", err))
-  }*/
-
-  /*constructor(props){
-    super(props)
-  }*/
-
   constructor(props){
     super(props)
     this.state = {
@@ -59,18 +40,14 @@ class Admin extends React.Component {
   }
 
   componentDidMount(){
-    console.log("COMPONENT DID MOUNT");
     this.onLoad()
   }
 
   componentDidUpdate(e) {
-    console.log("COMPONENT DID UPDATE");
     document.documentElement.scrollTop = 0;
     document.scrollingElement.scrollTop = 0;
     (this.refs.mainPanel || {}).scrollTop = 0;
   }
-
-  
 
   loadSquad = async () => {
     try{
@@ -113,23 +90,19 @@ class Admin extends React.Component {
     this.setState({loaded: true});
   }
 
+  //filter function for squad table (filter by user input)
   filterBySquad = (squadNome) => {
     const repartoList = this.state.reparto;
-    console.log(repartoList);
     const filteredList = [];
     repartoList.map(member =>{
       if(member.sentiero.squadriglia !== undefined && member.sentiero.squadriglia === squadNome){
         filteredList.push(member);
       }
     });
-    console.log(filteredList);
     return filteredList;
   }
 
-  
-
   getRoutes = routes => {
-    console.log("PROPS IN GETROUTES",this.props);
     return routes.map((prop, key) => {
       if (prop.layout === "/admin" && prop.path !== '/squadriglia' && prop.path !== '/eg') {
         return (
@@ -185,8 +158,6 @@ class Admin extends React.Component {
   
   
   render() {
-    console.log("ADMIN PROPS", this.props);
-    console.log("STATE",this.state);
       return  (this.state.loaded && 
         <>
           <Sidebar

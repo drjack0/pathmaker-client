@@ -1,18 +1,8 @@
 /*!
 
 =========================================================
-* Argon Dashboard React - v1.1.0
+* PathMaker DashBoard React
 =========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2019 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
 import React from "react";
@@ -68,7 +58,6 @@ class Header extends React.Component {
         }
       }
     }
-    console.log(this.saldoCassa())
     return total
   }
 
@@ -170,8 +159,6 @@ class Header extends React.Component {
 
 
   render() {
-    console.log("HEADERS PROPS", this.props)
-    console.log("HEADERS STATE", this.state)
     return (
       <>
         <div className="header bg-gradient-info pb-8 pt-5 pt-md-8">
@@ -184,10 +171,7 @@ class Header extends React.Component {
                     <CardBody>
                       <Row>
                         <div className="col">
-                          <CardTitle
-                            tag="h5"
-                            className="text-uppercase text-muted mb-0"
-                          >
+                          <CardTitle tag="h5" className="text-uppercase text-muted mb-0">
                             Mensili Arretrati {this.state.monthType}
                           </CardTitle>
                           <span className="h2 font-weight-bold mb-0">
@@ -221,7 +205,6 @@ class Header extends React.Component {
                             <DropdownItem onClick={e => this.setMensili(e,"Maggio")}>Maggio</DropdownItem>
                           </DropdownMenu>
                         </Dropdown>
-                        {/*<span className="text-nowrap">Seleziona mese</span>*/}
                       </p>
                     </CardBody>
                   </Card>
@@ -231,10 +214,7 @@ class Header extends React.Component {
                     <CardBody>
                       <Row>
                         <div className="col">
-                          <CardTitle
-                            tag="h5"
-                            className="text-uppercase text-muted mb-0"
-                          >
+                          <CardTitle tag="h5" className="text-uppercase text-muted mb-0">
                             Mensili Arretrati Totali
                           </CardTitle>
                           <span className="h2 font-weight-bold mb-0">
@@ -261,10 +241,7 @@ class Header extends React.Component {
                     <CardBody>
                       <Row>
                         <div className="col">
-                          <CardTitle
-                            tag="h5"
-                            className="text-uppercase text-muted mb-0"
-                          >
+                          <CardTitle tag="h5" className="text-uppercase text-muted mb-0">
                             Saldo Disponibile
                           </CardTitle>
                           <span className="h2 font-weight-bold mb-0">{this.saldoCassa()}</span>
@@ -289,10 +266,7 @@ class Header extends React.Component {
                     <CardBody>
                       <Row>
                         <div className="col">
-                          <CardTitle
-                            tag="h5"
-                            className="text-uppercase text-muted mb-0"
-                          >
+                          <CardTitle tag="h5" className="text-uppercase text-muted mb-0">
                             Reparto Roma 19
                           </CardTitle>
                           <span className="h2 font-weight-bold mb-0">

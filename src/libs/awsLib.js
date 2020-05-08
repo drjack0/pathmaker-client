@@ -1,3 +1,5 @@
+//Some Functions with amplify library
+
 import {Storage} from "aws-amplify";
 
 export async function s3UploadAutorizzazione(file,censcode,cognome,nome){
@@ -6,7 +8,6 @@ export async function s3UploadAutorizzazione(file,censcode,cognome,nome){
     const stored = await Storage.put(filename, file, {
         contentType: file.type
     });
-    console.log(stored);
     return stored.key
 }
 

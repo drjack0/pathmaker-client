@@ -1,23 +1,13 @@
 /*!
 
 =========================================================
-* Argon Dashboard React - v1.1.0
+* PathMaker DashBoard React
 =========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2019 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
+
 import React, {useState} from "react";
 import {Auth} from "aws-amplify";
-
 
 // reactstrap components
 import {
@@ -30,7 +20,6 @@ import {
   InputGroupAddon,
   InputGroupText,
   InputGroup,
-  Row,
   Col,
   Modal,
   ModalHeader,
@@ -48,16 +37,12 @@ export default function Register(props) {
 
   function validateForm(){
     return username.length > 0 && verificationCode.length > 0;
-    ;
   }
 
   async function handleSubmit(event){
     event.preventDefault();
-
     try{
-      console.log(username,verificationCode);
       const userReturnAuth = await Auth.confirmSignUp(username,verificationCode);
-      console.log(userReturnAuth);
       props.history.push("/login")
     } catch(err){
       alert(err.message);
@@ -69,7 +54,6 @@ export default function Register(props) {
       event.preventDefault();      
       try{
         const func = await Auth.resendSignUp(username);
-        console.log(func);
         SetModal(!modal)
         alert("Abbiamo reinviato il codice... Controlla la tua Email! (Anche nello Spam)");
       } catch(err) {
@@ -114,32 +98,30 @@ export default function Register(props) {
                     Confirm Registration
                   </Button>                                  
                 </div>
-              </Form> 
-                <hr></hr>
+              </Form>
+
+              <hr/>
                 
-                {/* MODAL CONFIRM SIGNUP */}
-                <div className="text-center">
-                    <Button type="button" className="btn btn-block btn-warning mb-3" onClick={toggle}>Not Yet Received?</Button>
-                    <Modal isOpen={modal} toggle={toggle} className="modal-dialog modal-danger modal-dialog-centered modal-">
-                        <div className="modal-content bg-gradient-danger">
-                            <ModalHeader toggle={toggle}>
-                            </ModalHeader>
-
-                            <ModalBody>
-                                <div className="py-3 text-center">
-                                    <i className="ni ni-spaceship ni-3x"></i>
-                                    <h4 className="heading mt-4">Invio Link</h4>
-                                    <p>Inserisci nel campo l'indirizzo Email a cui inviare, nuovamente, il codice di verifica</p>
-                                </div>
-                            </ModalBody>
-
-                            <ModalFooter>
-                                <Button className="btn btn-white" /*color="primary"*/ onClick={handleSendLink}>Invia</Button>{' '}
-                                <Button className="btn btn-link text-white ml-auto" /*color="secondary"*/ onClick={toggle}>Ok, Ho capito!</Button>
-                            </ModalFooter>
-                        </div>         
-                    </Modal>
-                </div>                          
+              {/* MODAL CONFIRM SIGNUP */}
+              <div className="text-center">
+                <Button type="button" className="btn btn-block btn-warning mb-3" onClick={toggle}>Not Yet Received?</Button>
+                  <Modal isOpen={modal} toggle={toggle} className="modal-dialog modal-danger modal-dialog-centered modal-">
+                    <div className="modal-content bg-gradient-danger">
+                      <ModalHeader toggle={toggle}></ModalHeader>
+                      <ModalBody>
+                        <div className="py-3 text-center">
+                          <i className="ni ni-spaceship ni-3x"></i>
+                          <h4 className="heading mt-4">Invio Link</h4>
+                          <p>Inserisci nel campo l'indirizzo Email a cui inviare, nuovamente, il codice di verifica</p>
+                        </div>
+                      </ModalBody>
+                      <ModalFooter>
+                        <Button className="btn btn-white" /*color="primary"*/ onClick={handleSendLink}>Invia</Button>{' '}
+                        <Button className="btn btn-link text-white ml-auto" /*color="secondary"*/ onClick={toggle}>Ok, Ho capito!</Button>
+                      </ModalFooter>
+                    </div>         
+                  </Modal>
+              </div>                          
             </CardBody>
           </Card>
         </Col>

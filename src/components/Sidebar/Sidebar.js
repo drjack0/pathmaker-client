@@ -1,85 +1,65 @@
 /*!
 
 =========================================================
-* Argon Dashboard React - v1.1.0
+* PathMaker DashBoard React
 =========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2019 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
+
 /*eslint-disable*/
 import React from "react";
 import { NavLink as NavLinkRRD, Link } from "react-router-dom";
+
 // nodejs library to set properties for components
 import { PropTypes } from "prop-types";
 
 // reactstrap components
 import {
-  Button,
-  Card,
-  CardHeader,
-  CardBody,
-  CardTitle,
   Collapse,
   DropdownMenu,
   DropdownItem,
   UncontrolledDropdown,
   DropdownToggle,
-  FormGroup,
-  Form,
-  Input,
-  InputGroupAddon,
-  InputGroupText,
-  InputGroup,
   Media,
   NavbarBrand,
   Navbar,
   NavItem,
   NavLink,
   Nav,
-  Progress,
-  Table,
   Container,
   Row,
   Col
 } from "reactstrap";
 
-
-
-var ps;
-
 class Sidebar extends React.Component {
   state = {
     collapseOpen: false
   };
+
   constructor(props) {
     super(props);
     this.activeRoute.bind(this);
   }
+
   // verifies if routeName is the one active (in browser input)
   activeRoute(routeName) {
     return this.props.location.pathname.indexOf(routeName) > -1 ? "active" : "";
   }
+
   // toggles collapse between opened and closed (true/false)
   toggleCollapse = () => {
     this.setState({
       collapseOpen: !this.state.collapseOpen
     });
   };
+
   // closes the collapse
   closeCollapse = () => {
     this.setState({
       collapseOpen: false
     });
   };
+
   // creates the links that appear in the left menu / Sidebar
   createLinks = routes => {
     return routes.map((prop, key) => {
@@ -101,6 +81,7 @@ class Sidebar extends React.Component {
       
     });
   };
+
   render() {
     const { bgColor, routes, logo } = this.props;
     let navbarBrandProps;
@@ -116,40 +97,27 @@ class Sidebar extends React.Component {
       };
     }
     return (
-      <Navbar
-        className="navbar-vertical fixed-left navbar-light bg-white"
-        expand="md"
-        id="sidenav-main"
-      >
+      <Navbar className="navbar-vertical fixed-left navbar-light bg-white" expand="md" id="sidenav-main">
         <Container fluid>
           {/* Toggler */}
-          <button
-            className="navbar-toggler"
-            type="button"
-            onClick={this.toggleCollapse}
-          >
+          <button className="navbar-toggler" type="button" onClick={this.toggleCollapse}>
             <span className="navbar-toggler-icon" />
           </button>
+
           {/* Brand */}
           {logo ? (
             <NavbarBrand className="pt-0" {...navbarBrandProps}>
-              <img
-                alt={logo.imgAlt}
-                className="navbar-brand-img"
-                src={logo.imgSrc}
-              />
+              <img alt={logo.imgAlt} className="navbar-brand-img" src={logo.imgSrc}/>
             </NavbarBrand>
           ) : null}
+
           {/* User */}
           <Nav className="align-items-center d-md-none">
             <UncontrolledDropdown nav>
               <DropdownToggle nav>
                 <Media className="align-items-center">
                   <span className="avatar avatar-sm rounded-circle">
-                    <img
-                      alt="..."
-                      src={require("assets/img/theme/user-800.jpg")}
-                    />
+                    <img alt="..." src={require("assets/img/theme/user-800.jpg")}/>
                   </span>
                 </Media>
               </DropdownToggle>
@@ -173,6 +141,7 @@ class Sidebar extends React.Component {
               </DropdownMenu> 
             </UncontrolledDropdown>
           </Nav>
+
           {/* Collapse */}
           <Collapse navbar isOpen={this.state.collapseOpen}>
             {/* Collapse header */}
@@ -203,29 +172,14 @@ class Sidebar extends React.Component {
                 </Col>
               </Row>
             </div>
-            {/* Form */}
-            {/*<Form className="mt-4 mb-3 d-md-none">
-              <InputGroup className="input-group-rounded input-group-merge">
-                <Input
-                  aria-label="Search"
-                  className="form-control-rounded form-control-prepended"
-                  placeholder="Search"
-                  type="search"
-                />
-                <InputGroupAddon addonType="prepend">
-                  <InputGroupText>
-                    <span className="fa fa-search" />
-                  </InputGroupText>
-                </InputGroupAddon>
-              </InputGroup>
-            </Form>*/}
-            {/* Navigation */}
+
+            {/* Navigation v1*/}
             <Nav navbar>{this.createLinks(routes)}</Nav>
-            {/* Divider */}
             <hr className="my-3" />
+
             {/* Heading */}
             <h6 className="navbar-heading text-muted">Link Utili</h6>
-            {/* Navigation */}
+            {/* Navigation v2*/}
             <Nav className="mb-md-3" navbar>
               <NavItem>
                 <NavLink href="https://buonacaccia.net/" target="_blank">

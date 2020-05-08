@@ -2,7 +2,6 @@ import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
 
 const ProtectedRoute = ({ component: Component, check, ...rest }) => {
-  console.log("PROT ROUTE CHECK ",check)
   return (
     <Route {...rest} render={
       props => {

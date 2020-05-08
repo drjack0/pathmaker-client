@@ -1,18 +1,8 @@
 /*!
 
 =========================================================
-* Argon Dashboard React - v1.1.0
+* PathMaker DashBoard React
 =========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2019 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
 import React from "react";
@@ -38,13 +28,7 @@ import {
   InputGroup,
   InputGroupAddon,
   InputGroupText,
-  InputGroupButtonDropdown,
-  DropdownMenu,
-  DropdownToggle,
-  DropdownItem,
   Table,
-  Link,
-  Collapse,
   Label
 } from "reactstrap";
 // core components
@@ -52,7 +36,7 @@ import UserHeader from "components/Headers/UserHeader.js";
 import { Auth, API, Storage } from "aws-amplify";
 import ReactDatetimeClass from "react-datetime";
 import ReactDatetime from "react-datetime";
-import {s3UploadCSV, s3UploadMainCSV} from "libs/awsLib.js";
+import {s3UploadCSV} from "libs/awsLib.js";
 
 class Profile extends React.Component {
   constructor(props){
@@ -71,7 +55,6 @@ class Profile extends React.Component {
       addEgModal: false,
       showUsersModal: false,
 
-      
       censcodeEG:  "",
       nomeEG:  "",
       cognomeEG:  "",
@@ -148,38 +131,37 @@ class Profile extends React.Component {
 
   renderUsersTable = () => {
     return this.userList.sort((a,b) => (a.Enabled < b.Enabled) ? 1 : -1).map((user,i) => {
-        if(user.Enabled === true){
-          return (
-            <tr key={user.Username}>
-              <th scope="row">{user.Attributes[0].Value}</th>
-              <td>Enabled</td>
-              <td>
-                <i style={{cursor: "pointer"}} className="fas fa-ban fa-2x text-primary mr-2" onClick={e => this.disableUser(e,user.Username)}/>
-                <i style={{cursor: "pointer"}} className="far fa-trash-alt fa-2x text-secondary mr-2" onClick={e => this.deleteUser(e,user.Username)}/>
-              </td>
-            </tr>
-          )
-        } else {
-          return (
-            <tr key={user.Username}>
-              <th scope="row">{user.Attributes[0].Value}</th>
-              <td>Disabled</td>
-              <td>
-                <i style={{cursor: "pointer"}} className="fas fa-check-circle fa-2x text-success mr-2" onClick={e => this.enableUser(e,user.Username)}/>
-                <i style={{cursor: "pointer"}} className="far fa-trash-alt fa-2x text-secondary mr-2" onClick={e => this.deleteUser(e,user.Username)}/>
-              </td>
-            </tr>
-          )
-        }
-      })
-    }
+      if(user.Enabled === true){
+        return (
+          <tr key={user.Username}>
+            <th scope="row">{user.Attributes[0].Value}</th>
+            <td>Enabled</td>
+            <td>
+              <i style={{cursor: "pointer"}} className="fas fa-ban fa-2x text-primary mr-2" onClick={e => this.disableUser(e,user.Username)}/>
+              <i style={{cursor: "pointer"}} className="far fa-trash-alt fa-2x text-secondary mr-2" onClick={e => this.deleteUser(e,user.Username)}/>
+            </td>
+          </tr>
+        )
+      }else {
+        return (
+          <tr key={user.Username}>
+            <th scope="row">{user.Attributes[0].Value}</th>
+            <td>Disabled</td>
+            <td>
+              <i style={{cursor: "pointer"}} className="fas fa-check-circle fa-2x text-success mr-2" onClick={e => this.enableUser(e,user.Username)}/>
+              <i style={{cursor: "pointer"}} className="far fa-trash-alt fa-2x text-secondary mr-2" onClick={e => this.deleteUser(e,user.Username)}/>
+            </td>
+          </tr>
+        )
+      }
+    })
+  }
 
     getUserList = async () => {
       var userListProd;
       try{
         userListProd = await API.get("pathMakerUtils","/utils/listusers");
         this.userList = userListProd.Users;
-        console.log(this.userList);
       } catch(err) {
         console.log(err);
       }
@@ -192,33 +174,25 @@ class Profile extends React.Component {
             && this.state.oldPassword === this.state.confirmOldPassword
             && this.state.newPassword === this.state.confirmNewPassword;
   }
-
   validateFormInfo = () => {
     return this.state.nomeMod.length > 0 && this.state.cognomeMod.length > 0
   }
-
   validateFormDescrizione = () => {
     return this.state.descrizioneMod.length > 0;
   }
 
   handleModInfo = async (event) => {
     event.preventDefault();
-    console.log("WOO CHANGE INFO");
-    console.log(this.state.nomeMod,this.state.cognomeMod);
     try{
       const userCurrent = await Auth.currentAuthenticatedUser({
         bypassCache: true
       });
-      console.log(userCurrent);
       try{
         const data = await Auth.updateUserAttributes(userCurrent,{
           "custom:nome":this.state.nomeMod,
           "custom:cognome":this.state.cognomeMod
         })
-        console.log(data);
-        //this.props.history.go("/admin/user-profile");
         this.props.history.go("/admin/user-profile");
-        //this.props.history.goBack();
       } catch(err2){
         console.log("UPDATE ERR",err2)
       }
@@ -229,15 +203,12 @@ class Profile extends React.Component {
 
   handleModPassword = async (event) => {
     event.preventDefault();
-    console.log("WOO PASS CHANGE");
     try{
       const userCurrent = await Auth.currentAuthenticatedUser({
         bypassCahce: true
       });
-      console.log(userCurrent);
       try{
         const data = await Auth.changePassword(userCurrent, this.state.oldPassword, this.state.newPassword);
-        console.log(data);
         this.props.history.go("/admin/user-profile");
       } catch(err2){
         console.log("CHANGE PASS ERR",err2)
@@ -249,21 +220,15 @@ class Profile extends React.Component {
 
   handleModDescription = async (event) => {
     event.preventDefault();
-    console.log("WOO CHANGE DESCRIPTION");
-    console.log(this.state.descrizioneMod);
     try{
       const userCurrent = await Auth.currentAuthenticatedUser({
         bypassCache: true
       });
-      console.log(userCurrent);
       try{
         const data = await Auth.updateUserAttributes(userCurrent,{
           "custom:descrizione":this.state.descrizioneMod
         })
-        console.log(data);
-        //this.props.history.go("/admin/user-profile");
         this.props.history.go("/admin/user-profile");
-        //this.props.history.goBack();
       } catch(err2){
         console.log("UPDATE ERR",err2)
       }
@@ -323,11 +288,8 @@ class Profile extends React.Component {
     this.fileCSV.current = event.target.files[0]
   }
   handleCSV = async (event) => {
-    event.preventDefault()
-    console.log("CSV FRONTEND FUNCTION");
     try{
       const csv = this.fileCSV.current ? await s3UploadCSV(this.fileCSV.current) : null;
-      console.log("CSV:",csv);
       if(csv !== null){
         const res = await API.post("pathMakerUtils","/import/csv");
         console.log(res);
@@ -340,7 +302,6 @@ class Profile extends React.Component {
   getMainCSV = async (event) => {
     event.preventDefault()
     const res = await Storage.get('MAIN.csv').then(data => {return data}).catch(err => {console.log(err)});
-    console.log(res);
     window.open(res.toString());
   }
  
@@ -348,6 +309,7 @@ class Profile extends React.Component {
     return (
       <>
         <UserHeader {...this.props}/>
+
         {/* Page content */}
         <Container className="mt--7" fluid>
           <Row>
@@ -356,28 +318,13 @@ class Profile extends React.Component {
                 <Row className="justify-content-center">
                   <Col className="order-lg-2" lg="3">
                     <div className="card-profile-image">
-                      <a href="#pablo" /*onClick={e => e.preventDefault()}*/>
-                        <img
-                          alt="..."
-                          className="rounded-circle"
-                          src={require("assets/img/theme/user-800.jpg")}
-                        />
+                      <a href="#pablo">
+                        <img alt="..." className="rounded-circle" src={require("assets/img/theme/user-800.jpg")}/>
                       </a>
                     </div>
                   </Col>
                 </Row>
-                <CardHeader className="text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
-                  <div className="d-flex justify-content-between">                    
-                    {/*<Button
-                      className="float-right"
-                      color="default"
-                      href="#pablo"
-                      size="sm"
-                    >
-                      Cambia Immagine
-                    </Button>*/}
-                  </div>
-                </CardHeader>
+                <CardHeader className="text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4"/>
                 <CardBody className="pt-0 pt-md-4">
                   <Row>
                     <div className="col">
@@ -400,16 +347,11 @@ class Profile extends React.Component {
                   <div className="text-center">
                     <h3>
                       {this.props.user.nome} {this.props.user.cognome}
-                      {/*<span className="font-weight-light">, Età</span>*/}
                     </h3>
                     <div className="h5 font-weight-300">
                       <i className="ni location_pin mr-2" />
                       Roma, Italia
                     </div>
-                    {/*<div className="h5 mt-4">
-                      <i className="ni business_briefcase-24 mr-2" />
-                      Ruolo
-                    </div>*/}
                     <div>
                       <i className="ni education_hat mr-2" />
                       Reparto Rm 19
@@ -432,22 +374,22 @@ class Profile extends React.Component {
                   <Row>
                     <Col>
                       <div className="card-profile-stats d-flex justify-content-center">
-                      <Form role="form" onSubmit={e => this.handleCSV(e)}>
-                        <div className="form-row align-items-center">
-                          <div className="col-auto">
-                            <FormGroup controlid="fogliCensimento" className="mb-3 mx-2">
-                              <Label>Importa dati Reparto da CSV</Label>
-                              <InputGroup className="input-group-alternative">
-                                <Input accept=".csv" type="file" onChange={e => this.handleFileChangeCSV(e)}/>
-                              </InputGroup>
-                              <small id="emailHelp" className="form-text text-muted" style={{cursor: "pointer",color: "red"}} onClick={e => this.getMainCSV(e)}><u>scarica qui la tabella CSV</u></small>
-                            </FormGroup>
+                        <Form role="form" onSubmit={e => this.handleCSV(e)}>
+                          <div className="form-row align-items-center">
+                            <div className="col-auto">
+                              <FormGroup controlid="fogliCensimento" className="mb-3 mx-2">
+                                <Label>Importa dati Reparto da CSV</Label>
+                                <InputGroup className="input-group-alternative">
+                                  <Input accept=".csv" type="file" onChange={e => this.handleFileChangeCSV(e)}/>
+                                </InputGroup>
+                                <small id="emailHelp" className="form-text text-muted" style={{cursor: "pointer",color: "red"}} onClick={e => this.getMainCSV(e)}><u>scarica qui la tabella CSV</u></small>
+                              </FormGroup>
+                            </div>
+                            <div className="col-auto">
+                              <Button outline color="info" className="btn align-self-center" type="submit">Importa</Button>
+                            </div>
                           </div>
-                          <div className="col-auto">
-                            <Button outline color="info" className="btn align-self-center" type="submit">Importa</Button>
-                          </div>
-                        </div>
-                      </Form>
+                        </Form>
                       </div>
                     </Col>
                   </Row>
@@ -456,10 +398,7 @@ class Profile extends React.Component {
                 
               </Card>
             </Col>
-
-            
-
-            
+   
             <Col className="order-xl-1" xl="8">
               <Card className="bg-secondary shadow">
                 <CardHeader className="bg-white border-0">
@@ -467,25 +406,20 @@ class Profile extends React.Component {
                     <Col xs="8">
                       <h3 className="mb-0">Il mio account</h3>
                     </Col>
-                    
                   </Row>
                 </CardHeader>
                 <CardBody>
                   
-                  {/* FORM INFO NOME COGNOME */}
+                  {/* FORM EMAIL NOME COGNOME */}
                   <Form onSubmit={this.handleModInfo}>
                     <h6 className="heading-small text-muted mb-4">
                       User information
                     </h6>
                     <div className="pl-lg-4">
-                      <Row>
-                        
+                      <Row> 
                         <Col lg="12">
                           <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-email"
-                            >
+                            <label className="form-control-label" htmlFor="input-email">
                               Email address
                             </label>
                             <Input
@@ -542,9 +476,9 @@ class Profile extends React.Component {
                     </div>
                   </Form>  
                   
-                    <hr className="my-4" />
+                  <hr className="my-4" />
 
-                    {/* Password */}
+                  {/* Password */}
                   <Form onSubmit={this.handleModPassword}>                     
                     <h6 className="heading-small text-muted mb-4">
                       Change Password
@@ -631,14 +565,13 @@ class Profile extends React.Component {
                     </div>
                   </Form>
 
-                    <hr className="my-4" />
+                  <hr className="my-4" />
 
+                  {/* Description */}
                   <Form onSubmit={this.handleModDescription}>
-                    {/* Description */}
                     <h6 className="heading-small text-muted mb-4">About me</h6>
-                    {/*<div className="pl-lg-4">*/}
                     <Col className="lg-12">
-                    <FormGroup>
+                      <FormGroup>
                         <Input
                           className="form-control-alternative"
                           placeholder={this.props.user.descrizione}
@@ -652,10 +585,7 @@ class Profile extends React.Component {
                         <Button disabled={!this.validateFormDescrizione()} className="my-4" size="sm" color="primary" type="submit">
                           Cambia Descrizione
                         </Button>
-                        </Col>
-                      
-                      
-                    {/*</div>*/}
+                    </Col>
                   </Form>
                 </CardBody>
               </Card>
@@ -666,272 +596,266 @@ class Profile extends React.Component {
             <div className="modal-content bg-gradient-danger">
               <ModalHeader toggle={this.toggleAddEgModal} />
               <Form role="form" onSubmit={this.handleAddUserSubmit}>
-              <ModalBody>
-                <div className="py-3 text-center">
-                  <i className="ni ni-badge ni-3x"></i>
-                  <h4 className="heading mt-4">Crea un nuovo EG</h4>
-                  <p>Inserisci i dati dell'EG che vuoi registrare</p>
-                </div>
+                <ModalBody>
+                  <div className="py-3 text-center">
+                    <i className="ni ni-badge ni-3x"></i>
+                    <h4 className="heading mt-4">Crea un nuovo EG</h4>
+                    <p>Inserisci i dati dell'EG che vuoi registrare</p>
+                  </div>
+                  <hr className="mt-1"/>
+                  <p className="text-center">Dati principali</p>
+                  <FormGroup controlid="censcode" className="mb-3">
+                    <InputGroup className="input-group-alternative">
+                      <InputGroupAddon addonType="prepend">
+                        <InputGroupText>
+                          <i className="ni ni-app" />
+                        </InputGroupText>
+                      </InputGroupAddon>
+                      <Input placeholder="Codice Censimento" type="text" required onChange={e => this.setState({censcodeEG: e.target.value})}/>
+                    </InputGroup>
+                  </FormGroup>
+                  <Row>
+                    <Col md="6">
+                      <FormGroup controlid="nomeEg" /*className="mb-3 mx-6"*/>
+                        <InputGroup className="input-group-alternative">
+                          <InputGroupAddon addonType="prepend">
+                            <InputGroupText>
+                              <i className="fas fa-ghost" />
+                            </InputGroupText>
+                          </InputGroupAddon>
+                          <Input placeholder="Nome EG" required type="text" onChange={e => this.setState({nomeEG: e.target.value})}/>
+                        </InputGroup>
+                      </FormGroup>
+                    </Col>
+                    <Col md="6">
+                      <FormGroup controlid="cognomeEg" /*className="mb-3 mx-6"*/>
+                        <InputGroup className="input-group-alternative">
+                          <InputGroupAddon addonType="prepend">
+                            <InputGroupText>
+                              <i className="fas fa-signature" />
+                            </InputGroupText>
+                          </InputGroupAddon>
+                          <Input placeholder="Cognome EG" required type="text" onChange={e => this.setState({cognomeEG: e.target.value})}/>
+                        </InputGroup>
+                      </FormGroup>
+                    </Col>
+                  </Row>
 
-                <hr className="mt-1"/>
+                  <p className="text-center">Recapiti</p>
+                  <Row>
+                    <Col md="6">
+                      <FormGroup controlid="casa" /*className="mb-3 mx-6"*/>
+                        <InputGroup className="input-group-alternative">
+                          <InputGroupAddon addonType="prepend">
+                            <InputGroupText>
+                              <i className="fas fa-voicemail" />
+                            </InputGroupText>
+                          </InputGroupAddon>
+                          <Input placeholder="Numero Casa" type="text" onChange={e => this.setState({casaEG: e.target.value})}/>
+                        </InputGroup>
+                      </FormGroup>
+                    </Col>
+                    <Col md="6">
+                      <FormGroup controlid="cellulare" /*className="mb-3 mx-6"*/>
+                        <InputGroup className="input-group-alternative">
+                          <InputGroupAddon addonType="prepend">
+                            <InputGroupText>
+                              <i className="fas fa-phone" />
+                            </InputGroupText>
+                          </InputGroupAddon>
+                          <Input placeholder="Cellulare" type="text" onChange={e => this.setState({cellualreEG: e.target.value})}/>
+                        </InputGroup>
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col md="6">
+                      <FormGroup controlid="indirizzo" /*className="mb-3 mx-6"*/>
+                        <InputGroup className="input-group-alternative">
+                          <InputGroupAddon addonType="prepend">
+                            <InputGroupText>
+                              <i className="fas fa-home" />
+                            </InputGroupText>
+                          </InputGroupAddon>
+                          <Input placeholder="Indirizzo" type="text" onChange={e => this.setState({indirizzoEG: e.target.value})}/>
+                        </InputGroup>
+                      </FormGroup>
+                    </Col>
+                    <Col md="6">
+                      <FormGroup controlid="nascita" /*className="mb-3 mx-6"*/>
+                        <InputGroup className="input-group-alternative">
+                          <InputGroupAddon addonType="prepend">
+                            <InputGroupText>
+                              <i className="fas fa-birthday-cake" />
+                            </InputGroupText>
+                          </InputGroupAddon>
+                          <Input placeholder="Data di Nascita" type="date" onChange={e => this.setState({nascitaEG: e.target.value})}/>
+                        </InputGroup>
+                      </FormGroup>
+                    </Col>
+                  </Row>
 
-                <p className="text-center">Dati principali</p>
-                <FormGroup controlid="censcode" className="mb-3">
-                      <InputGroup className="input-group-alternative">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                            <i className="ni ni-app" />
-                          </InputGroupText>
-                        </InputGroupAddon>
-                        <Input placeholder="Codice Censimento" type="text" required onChange={e => this.setState({censcodeEG: e.target.value})}/>
-                      </InputGroup>
-                    </FormGroup>
-                    <Row>
-                  <Col md="6">
-                  <FormGroup controlid="nomeEg" /*className="mb-3 mx-6"*/>
-                      <InputGroup className="input-group-alternative">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                          <i className="fas fa-ghost" />
-                          </InputGroupText>
-                        </InputGroupAddon>
-                        <Input placeholder="Nome EG" required type="text" onChange={e => this.setState({nomeEG: e.target.value})}/>
-                      </InputGroup>
-                    </FormGroup>
-                  </Col>
-                  <Col md="6">
-                  <FormGroup controlid="cognomeEg" /*className="mb-3 mx-6"*/>
-                      <InputGroup className="input-group-alternative">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                          <i className="fas fa-signature" />
-                          </InputGroupText>
-                        </InputGroupAddon>
-                        <Input placeholder="Cognome EG" required type="text" onChange={e => this.setState({cognomeEG: e.target.value})}/>
-                      </InputGroup>
-                    </FormGroup>
-                  </Col>
-                </Row>
+                  <p className="text-center">Sentiero</p>
+                  <Row>
+                    <Col md="6">
+                      <FormGroup controlid="squadriglia" /*className="mb-3 mx-6"*/>
+                        <InputGroup className="input-group-alternative">
+                          <InputGroupAddon addonType="prepend">
+                            <InputGroupText>
+                              <i className="fas fa-home" />
+                            </InputGroupText>
+                          </InputGroupAddon>
+                          <Input placeholder="Squadriglia" type="text" required onChange={e => this.setState({squadrigliaEG: e.target.value})}/>
+                        </InputGroup>
+                      </FormGroup>
+                    </Col>
+                    <Col md="6">
+                      <FormGroup controlid="anno" /*className="mb-3 mx-6"*/>
+                        <InputGroup className="input-group-alternative">
+                          <InputGroupAddon addonType="prepend">
+                            <InputGroupText>
+                              <i className="far fa-calendar" />
+                            </InputGroupText>
+                          </InputGroupAddon>
+                          <Input placeholder="Anno" type="text" required onChange={e => this.setState({annoEG: e.target.value})}/>
+                        </InputGroup>
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col md="6">
+                      <FormGroup controlid="camminaPer" /*className="mb-3 mx-6"*/>
+                        <InputGroup className="input-group-alternative">
+                          <InputGroupAddon addonType="prepend">
+                            <InputGroupText>
+                              <i className="fas fa-shoe-prints" />
+                            </InputGroupText>
+                          </InputGroupAddon>
+                          <Input placeholder="Cammina Per..." type="text" onChange={e => this.setState({camminaPerEG: e.target.value})}/>
+                        </InputGroup>
+                      </FormGroup>
+                    </Col>
+                    <Col md="6">
+                      <FormGroup controlid="lavoraPer" /*className="mb-3 mx-6"*/>
+                        <InputGroup className="input-group-alternative">
+                          <InputGroupAddon addonType="prepend">
+                            <InputGroupText>
+                              <i className="fas fa-wrench" />
+                            </InputGroupText>
+                          </InputGroupAddon>
+                          <Input placeholder="Lavora Per..." type="text" onChange={e => this.setState({lavoraPerEG: e.target.value})}/>
+                        </InputGroup>
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col md="6">
+                      <FormGroup controlid="incarico" /*className="mb-3 mx-6"*/>
+                        <InputGroup className="input-group-alternative">
+                          <InputGroupAddon addonType="prepend">
+                            <InputGroupText>
+                              <i className="fas fa-briefcase" />
+                            </InputGroupText>
+                          </InputGroupAddon>
+                          <Input placeholder="Incarico" type="text" onChange={e => this.setState({incaricoEG: e.target.value})}/>
+                        </InputGroup>
+                      </FormGroup>
+                    </Col>
+                    <Col md="6">
+                      <FormGroup controlid="noteSentiero" /*className="mb-3 mx-6"*/>
+                        <InputGroup className="input-group-alternative">
+                          <InputGroupAddon addonType="prepend">
+                            <InputGroupText>
+                              <i className="far fa-sticky-note" />
+                            </InputGroupText>
+                          </InputGroupAddon>
+                          <Input placeholder="Note Sentiero" type="text" onChange={e => this.setState({noteSentieroEG: e.target.value})}/>
+                        </InputGroup>
+                      </FormGroup>
+                    </Col>
+                  </Row>
 
-                    <p className="text-center">Recapiti</p>
-
-                <Row>
-                  <Col md="6">
-                  <FormGroup controlid="casa" /*className="mb-3 mx-6"*/>
-                      <InputGroup className="input-group-alternative">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                          <i className="fas fa-voicemail" />
-                          </InputGroupText>
-                        </InputGroupAddon>
-                        <Input placeholder="Numero Casa" type="text" onChange={e => this.setState({casaEG: e.target.value})}/>
-                      </InputGroup>
-                    </FormGroup>
-                  </Col>
-                  <Col md="6">
-                  <FormGroup controlid="cellulare" /*className="mb-3 mx-6"*/>
-                      <InputGroup className="input-group-alternative">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                          <i className="fas fa-phone" />
-                          </InputGroupText>
-                        </InputGroupAddon>
-                        <Input placeholder="Cellulare" type="text" onChange={e => this.setState({cellualreEG: e.target.value})}/>
-                      </InputGroup>
-                    </FormGroup>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col md="6">
-                  <FormGroup controlid="indirizzo" /*className="mb-3 mx-6"*/>
-                      <InputGroup className="input-group-alternative">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                          <i className="fas fa-home" />
-                          </InputGroupText>
-                        </InputGroupAddon>
-                        <Input placeholder="Indirizzo" type="text" onChange={e => this.setState({indirizzoEG: e.target.value})}/>
-                      </InputGroup>
-                    </FormGroup>
-                  </Col>
-                  <Col md="6">
-                  <FormGroup controlid="nascita" /*className="mb-3 mx-6"*/>
-                      <InputGroup className="input-group-alternative">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                          <i className="fas fa-birthday-cake" />
-                          </InputGroupText>
-                        </InputGroupAddon>
-                        <Input placeholder="Data di Nascita" type="date" onChange={e => this.setState({nascitaEG: e.target.value})}/>
-                      </InputGroup>
-                    </FormGroup>
-                  </Col>
-                </Row>
-
-                <p className="text-center">Sentiero</p>
-
-                <Row>
-                  <Col md="6">
-                  <FormGroup controlid="squadriglia" /*className="mb-3 mx-6"*/>
-                      <InputGroup className="input-group-alternative">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                          <i className="fas fa-home" />
-                          </InputGroupText>
-                        </InputGroupAddon>
-                        <Input placeholder="Squadriglia" type="text" onChange={e => this.setState({squadrigliaEG: e.target.value})}/>
-                      </InputGroup>
-                    </FormGroup>
-                  </Col>
-                  <Col md="6">
-                  <FormGroup controlid="anno" /*className="mb-3 mx-6"*/>
-                      <InputGroup className="input-group-alternative">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                          <i className="far fa-calendar" />
-                          </InputGroupText>
-                        </InputGroupAddon>
-                        <Input placeholder="Anno" type="text" onChange={e => this.setState({annoEG: e.target.value})}/>
-                      </InputGroup>
-                    </FormGroup>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col md="6">
-                  <FormGroup controlid="camminaPer" /*className="mb-3 mx-6"*/>
-                      <InputGroup className="input-group-alternative">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                          <i className="fas fa-shoe-prints" />
-                          </InputGroupText>
-                        </InputGroupAddon>
-                        <Input placeholder="Cammina Per..." type="text" onChange={e => this.setState({camminaPerEG: e.target.value})}/>
-                      </InputGroup>
-                    </FormGroup>
-                  </Col>
-                  <Col md="6">
-                  <FormGroup controlid="lavoraPer" /*className="mb-3 mx-6"*/>
-                      <InputGroup className="input-group-alternative">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                          <i className="fas fa-wrench" />
-                          </InputGroupText>
-                        </InputGroupAddon>
-                        <Input placeholder="Lavora Per..." type="text" onChange={e => this.setState({lavoraPerEG: e.target.value})}/>
-                      </InputGroup>
-                    </FormGroup>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col md="6">
-                  <FormGroup controlid="incarico" /*className="mb-3 mx-6"*/>
-                      <InputGroup className="input-group-alternative">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                          <i className="fas fa-briefcase" />
-                          </InputGroupText>
-                        </InputGroupAddon>
-                        <Input placeholder="Incarico" type="text" onChange={e => this.setState({incaricoEG: e.target.value})}/>
-                      </InputGroup>
-                    </FormGroup>
-                  </Col>
-                  <Col md="6">
-                  <FormGroup controlid="noteSentiero" /*className="mb-3 mx-6"*/>
-                      <InputGroup className="input-group-alternative">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                          <i className="far fa-sticky-note" />
-                          </InputGroupText>
-                        </InputGroupAddon>
-                        <Input placeholder="Note Sentiero" type="text" onChange={e => this.setState({noteSentieroEG: e.target.value})}/>
-                      </InputGroup>
-                    </FormGroup>
-                  </Col>
-                </Row>
-
-                <p className="text-center">Mamma</p>
-
-                <Row>
-                  <Col md="6">
-                  <FormGroup controlid="nomeMamma" /*className="mb-3 mx-6"*/>
-                      <InputGroup className="input-group-alternative">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                          <i className="fas fa-signature" />
-                          </InputGroupText>
-                        </InputGroupAddon>
-                        <Input placeholder="Nome Mamma" type="text" onChange={e => this.setState({nomeMammaEG: e.target.value})}/>
-                      </InputGroup>
-                    </FormGroup>
-                  </Col>
-                  <Col md="6">
-                  <FormGroup controlid="cellMamma" /*className="mb-3 mx-6"*/>
-                      <InputGroup className="input-group-alternative">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                          <i className="fas fa-phone" />
-                          </InputGroupText>
-                        </InputGroupAddon>
-                        <Input placeholder="Cellulare Mamma" onChange={e => this.setState({cellMammaEG: e.target.value})}/>
-                      </InputGroup>
-                    </FormGroup>
-                  </Col>
-                </Row>
-                <FormGroup controlid="mailMamma" className="mb-3">
-                      <InputGroup className="input-group-alternative">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
+                  <p className="text-center">Mamma</p>
+                  <Row>
+                    <Col md="6">
+                      <FormGroup controlid="nomeMamma" /*className="mb-3 mx-6"*/>
+                        <InputGroup className="input-group-alternative">
+                          <InputGroupAddon addonType="prepend">
+                            <InputGroupText>
+                              <i className="fas fa-signature" />
+                            </InputGroupText>
+                          </InputGroupAddon>
+                          <Input placeholder="Nome Mamma" type="text" onChange={e => this.setState({nomeMammaEG: e.target.value})}/>
+                        </InputGroup>
+                      </FormGroup>
+                    </Col>
+                    <Col md="6">
+                      <FormGroup controlid="cellMamma" /*className="mb-3 mx-6"*/>
+                        <InputGroup className="input-group-alternative">
+                          <InputGroupAddon addonType="prepend">
+                            <InputGroupText>
+                              <i className="fas fa-phone" />
+                            </InputGroupText>
+                          </InputGroupAddon>
+                          <Input placeholder="Cellulare Mamma" onChange={e => this.setState({cellMammaEG: e.target.value})}/>
+                        </InputGroup>
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                  <FormGroup controlid="mailMamma" className="mb-3">
+                    <InputGroup className="input-group-alternative">
+                      <InputGroupAddon addonType="prepend">
+                        <InputGroupText>
                           <i className="far fa-envelope" />
-                          </InputGroupText>
-                        </InputGroupAddon>
-                        <Input placeholder="Mail Mamma" type="email" onChange={e => this.setState({mailMammaEG: e.target.value})}/>
-                      </InputGroup>
-                    </FormGroup>
+                        </InputGroupText>
+                      </InputGroupAddon>
+                      <Input placeholder="Mail Mamma" type="email" onChange={e => this.setState({mailMammaEG: e.target.value})}/>
+                    </InputGroup>
+                  </FormGroup>
 
-                <p className="text-center">Papa</p>
-
-                <Row>
-                  <Col md="6">
-                  <FormGroup controlid="nomePapa" /*className="mb-3 mx-6"*/>
-                      <InputGroup className="input-group-alternative">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                          <i className="fas fa-signature" />
-                          </InputGroupText>
-                        </InputGroupAddon>
-                        <Input placeholder="Nome Papà" type="text" onChange={e => this.setState({nomePapaEG: e.target.value})}/>
-                      </InputGroup>
-                    </FormGroup>
-                  </Col>
-                  <Col md="6">
-                  <FormGroup controlid="cellPapa" /*className="mb-3 mx-6"*/>
-                      <InputGroup className="input-group-alternative">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                          <i className="fas fa-phone" />
-                          </InputGroupText>
-                        </InputGroupAddon>
-                        <Input placeholder="Cellulare Papà" type="text" onChange={e => this.setState({cellPapaEG: e.target.value})}/>
-                      </InputGroup>
-                    </FormGroup>
-                  </Col>
-                </Row>
-                <FormGroup controlid="mailPapa" className="mb-3">
-                      <InputGroup className="input-group-alternative">
-                        <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
+                  <p className="text-center">Papa</p>
+                  <Row>
+                    <Col md="6">
+                      <FormGroup controlid="nomePapa" /*className="mb-3 mx-6"*/>
+                        <InputGroup className="input-group-alternative">
+                          <InputGroupAddon addonType="prepend">
+                            <InputGroupText>
+                              <i className="fas fa-signature" />
+                            </InputGroupText>
+                          </InputGroupAddon>
+                          <Input placeholder="Nome Papà" type="text" onChange={e => this.setState({nomePapaEG: e.target.value})}/>
+                        </InputGroup>
+                      </FormGroup>
+                    </Col>
+                    <Col md="6">
+                      <FormGroup controlid="cellPapa" /*className="mb-3 mx-6"*/>
+                        <InputGroup className="input-group-alternative">
+                          <InputGroupAddon addonType="prepend">
+                            <InputGroupText>
+                              <i className="fas fa-phone" />
+                            </InputGroupText>
+                          </InputGroupAddon>
+                          <Input placeholder="Cellulare Papà" type="text" onChange={e => this.setState({cellPapaEG: e.target.value})}/>
+                        </InputGroup>
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                  <FormGroup controlid="mailPapa" className="mb-3">
+                    <InputGroup className="input-group-alternative">
+                      <InputGroupAddon addonType="prepend">
+                        <InputGroupText>
                           <i className="far fa-envelope" />
-                          </InputGroupText>
-                        </InputGroupAddon>
-                        <Input placeholder="Mail Papà" type="email" onChange={e => this.setState({mailPapaEG: e.target.value})}/>
-                      </InputGroup>
-                    </FormGroup>
+                        </InputGroupText>
+                      </InputGroupAddon>
+                      <Input placeholder="Mail Papà" type="email" onChange={e => this.setState({mailPapaEG: e.target.value})}/>
+                    </InputGroup>
+                  </FormGroup>
                           
-              </ModalBody>
-              <ModalFooter>
-                <Button className="btn btn-white" type="submit" /*disabled={!this.validateBudgetForm()}*/>Aggiungi</Button>
-                <Button className="btn btn-link text-white ml-auto" onClick={this.toggleAddEgModal}>Indietro</Button>
-              </ModalFooter>
+                </ModalBody>
+                <ModalFooter>
+                  <Button className="btn btn-white" type="submit" /*disabled={!this.validateBudgetForm()}*/>Aggiungi</Button>
+                  <Button className="btn btn-link text-white ml-auto" onClick={this.toggleAddEgModal}>Indietro</Button>
+                </ModalFooter>
               </Form> 
             </div>         
           </Modal>
@@ -939,7 +863,6 @@ class Profile extends React.Component {
           <Modal isOpen={this.state.showUsersModal} toggle={e => this.toggleShowUsersModal} className="modal-dialog modal-danger modal-dialog-centered modal-">
             <div className="modal-content bg-gradient-danger">
               <ModalHeader toggle={this.toggleShowUsersModal} />
-
               <ModalBody>
                 <div className="py-3 text-center">
                   <i className="ni ni-badge ni-3x"></i>
@@ -959,7 +882,6 @@ class Profile extends React.Component {
                     Eliminerai il corrispondente Account
                   </p>
                 </div>
-
                 <Table className="align-items-center table-flush" responsive>
                   <thead>
                     <tr>
@@ -971,13 +893,11 @@ class Profile extends React.Component {
                   <tbody>
                     {this.renderUsersTable()}
                   </tbody>
-                </Table>
-                                           
+                </Table>                             
               </ModalBody>
               <ModalFooter>
                 <Button className="btn btn-link text-white ml-auto" onClick={this.toggleShowUsersModal}>Indietro</Button>
               </ModalFooter>
-
             </div>         
           </Modal>
 

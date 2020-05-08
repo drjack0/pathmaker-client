@@ -141,13 +141,12 @@ class Utils extends React.Component {
     const splitted = date.split("-");
     return splitted[2] + "/" + splitted[1] + "/" + splitted[0];
   }
-
   updateDateFormat = (date) => {
     const stringDate = new Date(date);
     return stringDate.getDate() + "/" + (stringDate.getMonth()+1) + "/" + stringDate.getFullYear();
   }
 
-
+  //TOGGLE TABLES
   toggleAnagrafica = () => {
     this.setState({openAnagrafica: !this.state.openAnagrafica})
   }
@@ -164,6 +163,7 @@ class Utils extends React.Component {
     this.setState({openBurocrazia: !this.state.openBurocrazia})
   }
 
+  //TOGGLE FILTERS
   toggleAnagraficaDropDown = () => {
     this.setState({dropdownAnagraficaOpen: !this.state.dropdownAnagraficaOpen})
   }
@@ -180,10 +180,10 @@ class Utils extends React.Component {
     this.setState({dropdownBurocraziaOpen: !this.state.dropdownBurocraziaOpen})
   }
 
+  //FILTER FUNCTIONS
   filterAnagraficaList =(event) => {
     var updatedList = this.state.anagraficaList;
     const filterType = this.state.anagraficaFilterType.toString();
-    console.log(filterType)
     updatedList = updatedList.filter(function(list){
       if(filterType === "nome" || filterType === "cognome" || filterType === "censcode"){
         return (list[filterType].toLowerCase().search(event.target.value.toLowerCase()) !== -1);
@@ -235,7 +235,6 @@ class Utils extends React.Component {
   filterBurocraziaList =(event) => {
     var updatedList = this.state.burocraziaList;
     const filterType = this.state.burocraziaFilterType.toString();
-    console.log(filterType)
     updatedList = updatedList.filter(function(list){
       if(filterType === "nome" || filterType === "cognome" || filterType === "censcode"){
         return (list[filterType].toLowerCase().search(event.target.value.toLowerCase()) !== -1);
@@ -248,6 +247,7 @@ class Utils extends React.Component {
     this.setState({backupBurocraziaList: updatedList});
   };
 
+  //RENDER TABLES
   renderAnagraficaTable = () => {
     return this.state.backupAnagraficaList.sort((a,b) => (a.nome > b.nome) ? 1 : -1).map((x,i) => {
       const {nome, cognome, censcode, recapiti} = x;
@@ -263,7 +263,6 @@ class Utils extends React.Component {
       )
     })
   }
-
   renderMensiliTable = () => {
     return this.state.backupMensiliList.sort((a,b) => (a.nome > b.nome) ? 1 : -1).map((x,i) => {
       const {nome, cognome, censcode, mensili} = x;
@@ -285,7 +284,6 @@ class Utils extends React.Component {
       )
     })
   }
-
   renderSentieroTable = () => {
     return this.state.backupSentieroList.sort((a,b) => (a.nome > b.nome) ? 1 : -1).map((x,i) => {
       const {nome, cognome, censcode, sentiero} = x;
@@ -301,7 +299,6 @@ class Utils extends React.Component {
       )
     })
   }
-
   renderGenitoriTable = () => {
     return this.state.backupGenitoriList.sort((a,b) => (a.nome > b.nome) ? 1 : -1).map((x,i) => {
       const {nome, cognome, censcode, mamma, papa} = x;
@@ -318,7 +315,6 @@ class Utils extends React.Component {
       )
     })
   }
-
   renderBurocraziaTable = () => {
     return this.state.backupBurocraziaList.sort((a,b) => (a.nome > b.nome) ? 1 : -1).map((x,i) => {
       const {nome, cognome, censcode, burocrazia} = x;
@@ -338,35 +334,34 @@ class Utils extends React.Component {
 
 
   render() {
-    console.log("UTILS STATE",this.state)
     return (
       <>
         <Header {...this.props} />
-        {/* Page content */}
+
         <Container className=" mt--7" fluid>
-          {/* Table */}
           <Row>
             <div className=" col">
+              
               <Card className=" shadow">          
                 <CardHeader className=" bg-transparent">
-                <Row className="align-items-center">
+                  <Row className="align-items-center">
                     <div className="col">
                       <h3 className=" mb-0" style={{cursor: "pointer"}} onClick={this.toggleAnagrafica}>Anagrafica</h3>
                     </div>
                     <div className="col md-4 text-right">
                       <InputGroup className="mb-1">
-                      <Input type="text" placeholder={"Filtra: " + this.state.anagraficaFilterType} className="mb-0" onChange={this.filterAnagraficaList} />
+                        <Input type="text" placeholder={"Filtra: " + this.state.anagraficaFilterType} className="mb-0" onChange={this.filterAnagraficaList} />
                         <InputGroupButtonDropdown className="mb-1" addonType="append" isOpen={this.state.dropdownAnagraficaOpen} toggle={this.toggleAnagraficaDropDown}>
                           <InputGroupText style={{paddingTop: "0.03rem",paddingRight:"0.04rem",paddingBottom: "0.03rem",paddingLeft:"0.04rem"}}>
-                          <DropdownToggle outline color="primary" >
-                            <i className="ni ni-zoom-split-in" />
-                          </DropdownToggle>
-                          <DropdownMenu >
-                            <DropdownItem header style={{color: "blue"}} >Seleziona Filtro</DropdownItem>
-                            <DropdownItem divider />
-                            <DropdownItem onClick={e => this.setState({anagraficaFilterType: "nome"})}>Nome</DropdownItem>
-                            <DropdownItem onClick={e => this.setState({anagraficaFilterType: "nascita"})}>Data di Nascita</DropdownItem>
-                          </DropdownMenu>
+                            <DropdownToggle outline color="primary" >
+                              <i className="ni ni-zoom-split-in" />
+                            </DropdownToggle>
+                            <DropdownMenu >
+                              <DropdownItem header style={{color: "blue"}} >Seleziona Filtro</DropdownItem>
+                              <DropdownItem divider />
+                              <DropdownItem onClick={e => this.setState({anagraficaFilterType: "nome"})}>Nome</DropdownItem>
+                              <DropdownItem onClick={e => this.setState({anagraficaFilterType: "nascita"})}>Data di Nascita</DropdownItem>
+                            </DropdownMenu>
                           </InputGroupText>                                                
                         </InputGroupButtonDropdown>                                                
                       </InputGroup>
@@ -383,7 +378,6 @@ class Utils extends React.Component {
                         <th scope="col">Cellulare</th>
                         <th scope="col">Indirizzo</th>
                         <th scope="col">Data Nascita</th>
-
                       </tr>
                     </thead>
                     <tbody>
@@ -395,34 +389,34 @@ class Utils extends React.Component {
 
               <Card className="mt-3">          
                 <CardHeader className=" bg-transparent">
-                <Row className="align-items-center">
+                  <Row className="align-items-center">
                     <div className="col">
                       <h3 className=" mb-0" style={{cursor: "pointer"}} onClick={this.toggleMensili}>Mensili</h3>
                     </div>
                     <div className="col md-4 text-right">
                       <InputGroup className="mb-1">
-                      <Input type="text" placeholder={"Filtra: " + this.state.mensiliFilterType} className="mb-0" onChange={this.filterMensiliList} />
+                        <Input type="text" placeholder={"Filtra: " + this.state.mensiliFilterType} className="mb-0" onChange={this.filterMensiliList} />
                         <InputGroupButtonDropdown className="mb-1" addonType="append" isOpen={this.state.dropdownMensiliOpen} toggle={this.toggleMensiliDropDown}>
                           <InputGroupText style={{paddingTop: "0.03rem",paddingRight:"0.04rem",paddingBottom: "0.03rem",paddingLeft:"0.04rem"}}>
-                          <DropdownToggle outline color="primary" >
-                            <i className="ni ni-zoom-split-in" />
-                          </DropdownToggle>
-                          <DropdownMenu >
-                            <DropdownItem header style={{color: "blue"}} >Seleziona Filtro</DropdownItem>
-                            <DropdownItem divider />
-                            <DropdownItem onClick={e => this.setState({mensiliFilterType: "nome"})}>Nome</DropdownItem>
-                            <DropdownItem onClick={e => this.setState({mensiliFilterType: "ottobre"})}>Ottobre</DropdownItem>
-                            <DropdownItem onClick={e => this.setState({mensiliFilterType: "novembre"})}>Novembre</DropdownItem>
-                            <DropdownItem onClick={e => this.setState({mensiliFilterType: "dicembre"})}>Dicembre</DropdownItem>
-                            <DropdownItem onClick={e => this.setState({mensiliFilterType: "gennaio"})}>Gennaio</DropdownItem>
-                            <DropdownItem onClick={e => this.setState({mensiliFilterType: "febbraio"})}>Febbraio</DropdownItem>
-                            <DropdownItem onClick={e => this.setState({mensiliFilterType: "marzo"})}>Marzo</DropdownItem>
-                            <DropdownItem onClick={e => this.setState({mensiliFilterType: "aprile"})}>Aprile</DropdownItem>
-                            <DropdownItem onClick={e => this.setState({mensiliFilterType: "maggio"})}>Maggio</DropdownItem>
-                            <DropdownItem onClick={e => this.setState({mensiliFilterType: "campoExtra"})}>Campo Extra</DropdownItem>
-                            <DropdownItem onClick={e => this.setState({mensiliFilterType: "accontoEstivo"})}>Acconto Estivo</DropdownItem>
-                            <DropdownItem onClick={e => this.setState({mensiliFilterType: "saldoEstivo"})}>Saldo Estivo</DropdownItem>
-                          </DropdownMenu>
+                            <DropdownToggle outline color="primary" >
+                              <i className="ni ni-zoom-split-in" />
+                            </DropdownToggle>
+                            <DropdownMenu >
+                              <DropdownItem header style={{color: "blue"}} >Seleziona Filtro</DropdownItem>
+                              <DropdownItem divider />
+                              <DropdownItem onClick={e => this.setState({mensiliFilterType: "nome"})}>Nome</DropdownItem>
+                              <DropdownItem onClick={e => this.setState({mensiliFilterType: "ottobre"})}>Ottobre</DropdownItem>
+                              <DropdownItem onClick={e => this.setState({mensiliFilterType: "novembre"})}>Novembre</DropdownItem>
+                              <DropdownItem onClick={e => this.setState({mensiliFilterType: "dicembre"})}>Dicembre</DropdownItem>
+                              <DropdownItem onClick={e => this.setState({mensiliFilterType: "gennaio"})}>Gennaio</DropdownItem>
+                              <DropdownItem onClick={e => this.setState({mensiliFilterType: "febbraio"})}>Febbraio</DropdownItem>
+                              <DropdownItem onClick={e => this.setState({mensiliFilterType: "marzo"})}>Marzo</DropdownItem>
+                              <DropdownItem onClick={e => this.setState({mensiliFilterType: "aprile"})}>Aprile</DropdownItem>
+                              <DropdownItem onClick={e => this.setState({mensiliFilterType: "maggio"})}>Maggio</DropdownItem>
+                              <DropdownItem onClick={e => this.setState({mensiliFilterType: "campoExtra"})}>Campo Extra</DropdownItem>
+                              <DropdownItem onClick={e => this.setState({mensiliFilterType: "accontoEstivo"})}>Acconto Estivo</DropdownItem>
+                              <DropdownItem onClick={e => this.setState({mensiliFilterType: "saldoEstivo"})}>Saldo Estivo</DropdownItem>
+                            </DropdownMenu>
                           </InputGroupText>                                                
                         </InputGroupButtonDropdown>                                                
                       </InputGroup>
@@ -433,7 +427,6 @@ class Utils extends React.Component {
                   <Table hover className="align-items-center table-flush" responsive>
                     <thead className="thead-light">
                       <tr>
-                        
                         <th scope="col">Nome</th>
                         <th scope="col">Ottobre</th>
                         <th scope="col">Novembre</th>
@@ -446,7 +439,6 @@ class Utils extends React.Component {
                         <th scope="col">Campo Extra</th>
                         <th scope="col">Acconto Estivo</th>
                         <th scope="col">Saldo Estivo</th>
-
                       </tr>
                     </thead>
                     <tbody>
@@ -458,28 +450,28 @@ class Utils extends React.Component {
 
               <Card className="mt-3">          
                 <CardHeader className=" bg-transparent">
-                <Row className="align-items-center">
+                  <Row className="align-items-center">
                     <div className="col">
                       <h3 className=" mb-0" style={{cursor: "pointer"}} onClick={this.toggleSentiero}>Sentiero</h3>
                     </div>
                     <div className="col md-4 text-right">
                       <InputGroup className="mb-1">
-                      <Input type="text" placeholder={"Filtra: " + this.state.sentieroFilterType} className="mb-0" onChange={this.filterSentieroList} />
+                        <Input type="text" placeholder={"Filtra: " + this.state.sentieroFilterType} className="mb-0" onChange={this.filterSentieroList} />
                         <InputGroupButtonDropdown className="mb-1" addonType="append" isOpen={this.state.dropdownSentieroOpen} toggle={this.toggleSentieroDropDown}>
                           <InputGroupText style={{paddingTop: "0.03rem",paddingRight:"0.04rem",paddingBottom: "0.03rem",paddingLeft:"0.04rem"}}>
-                          <DropdownToggle outline color="primary" >
-                            <i className="ni ni-zoom-split-in" />
-                          </DropdownToggle>
-                          <DropdownMenu >
-                            <DropdownItem header style={{color: "blue"}} >Seleziona Filtro</DropdownItem>
-                            <DropdownItem divider />
-                            <DropdownItem onClick={e => this.setState({sentieroFilterType: "nome"})}>Nome</DropdownItem>
-                            <DropdownItem onClick={e => this.setState({sentieroFilterType: "squadriglia"})}>Squadriglia</DropdownItem>
-                            <DropdownItem onClick={e => this.setState({sentieroFilterType: "anno"})}>Anno</DropdownItem>
-                            <DropdownItem onClick={e => this.setState({sentieroFilterType: "camminaPer"})}>Cammina Per</DropdownItem>
-                            <DropdownItem onClick={e => this.setState({sentieroFilterType: "lavoraPer"})}>Lavora Per</DropdownItem>
-                            <DropdownItem onClick={e => this.setState({sentieroFilterType: "incarico"})}>Incarico</DropdownItem>
-                          </DropdownMenu>
+                            <DropdownToggle outline color="primary" >
+                              <i className="ni ni-zoom-split-in" />
+                            </DropdownToggle>
+                            <DropdownMenu >
+                              <DropdownItem header style={{color: "blue"}} >Seleziona Filtro</DropdownItem>
+                              <DropdownItem divider />
+                              <DropdownItem onClick={e => this.setState({sentieroFilterType: "nome"})}>Nome</DropdownItem>
+                              <DropdownItem onClick={e => this.setState({sentieroFilterType: "squadriglia"})}>Squadriglia</DropdownItem>
+                              <DropdownItem onClick={e => this.setState({sentieroFilterType: "anno"})}>Anno</DropdownItem>
+                              <DropdownItem onClick={e => this.setState({sentieroFilterType: "camminaPer"})}>Cammina Per</DropdownItem>
+                              <DropdownItem onClick={e => this.setState({sentieroFilterType: "lavoraPer"})}>Lavora Per</DropdownItem>
+                              <DropdownItem onClick={e => this.setState({sentieroFilterType: "incarico"})}>Incarico</DropdownItem>
+                            </DropdownMenu>
                           </InputGroupText>                                                
                         </InputGroupButtonDropdown>                                                
                       </InputGroup>
@@ -496,7 +488,6 @@ class Utils extends React.Component {
                         <th scope="col">Cammina Per</th>
                         <th scope="col">Lavora Per</th>
                         <th scope="col">Incarico</th>
-
                       </tr>
                     </thead>
                     <tbody>
@@ -508,29 +499,29 @@ class Utils extends React.Component {
 
               <Card className="mt-3">          
                 <CardHeader className=" bg-transparent">
-                <Row className="align-items-center">
+                  <Row className="align-items-center">
                     <div className="col">
                       <h3 className=" mb-0" style={{cursor: "pointer"}} onClick={this.toggleGenitori}>Genitori</h3>
                     </div>
                     <div className="col md-4 text-right">
                       <InputGroup className="mb-1">
-                      <Input type="text" placeholder={"Filtra: " + this.state.genitoriFilterType} className="mb-0" onChange={this.filterGenitoriList} />
+                        <Input type="text" placeholder={"Filtra: " + this.state.genitoriFilterType} className="mb-0" onChange={this.filterGenitoriList} />
                         <InputGroupButtonDropdown className="mb-1" addonType="append" isOpen={this.state.dropdownGenitoriOpen} toggle={this.toggleGenitoriDropDown}>
                           <InputGroupText style={{paddingTop: "0.03rem",paddingRight:"0.04rem",paddingBottom: "0.03rem",paddingLeft:"0.04rem"}}>
-                          <DropdownToggle outline color="primary" >
-                            <i className="ni ni-zoom-split-in" />
-                          </DropdownToggle>
-                          <DropdownMenu >
-                            <DropdownItem header style={{color: "blue"}} >Seleziona Filtro</DropdownItem>
-                            <DropdownItem divider />
-                            <DropdownItem onClick={e => this.setState({genitoriFilterType: "nome"})}>Nome</DropdownItem>
-                            <DropdownItem onClick={e => this.setState({genitoriFilterType: "nomeMamma"})}>Mamma</DropdownItem>
-                            <DropdownItem onClick={e => this.setState({genitoriFilterType: "cellMamma"})}>Cell Mamma</DropdownItem>
-                            <DropdownItem onClick={e => this.setState({genitoriFilterType: "mailMamma"})}>Mail Mamma</DropdownItem>
-                            <DropdownItem onClick={e => this.setState({genitoriFilterType: "nomePapa"})}>Papà</DropdownItem>
-                            <DropdownItem onClick={e => this.setState({genitoriFilterType: "cellPapa"})}>Cell Papà</DropdownItem>
-                            <DropdownItem onClick={e => this.setState({genitoriFilterType: "mailPapa"})}>Mail Papà</DropdownItem>
-                          </DropdownMenu>
+                            <DropdownToggle outline color="primary" >
+                              <i className="ni ni-zoom-split-in" />
+                            </DropdownToggle>
+                            <DropdownMenu >
+                              <DropdownItem header style={{color: "blue"}} >Seleziona Filtro</DropdownItem>
+                              <DropdownItem divider />
+                              <DropdownItem onClick={e => this.setState({genitoriFilterType: "nome"})}>Nome</DropdownItem>
+                              <DropdownItem onClick={e => this.setState({genitoriFilterType: "nomeMamma"})}>Mamma</DropdownItem>
+                              <DropdownItem onClick={e => this.setState({genitoriFilterType: "cellMamma"})}>Cell Mamma</DropdownItem>
+                              <DropdownItem onClick={e => this.setState({genitoriFilterType: "mailMamma"})}>Mail Mamma</DropdownItem>
+                              <DropdownItem onClick={e => this.setState({genitoriFilterType: "nomePapa"})}>Papà</DropdownItem>
+                              <DropdownItem onClick={e => this.setState({genitoriFilterType: "cellPapa"})}>Cell Papà</DropdownItem>
+                              <DropdownItem onClick={e => this.setState({genitoriFilterType: "mailPapa"})}>Mail Papà</DropdownItem>
+                            </DropdownMenu>
                           </InputGroupText>                                                
                         </InputGroupButtonDropdown>                                                
                       </InputGroup>
@@ -548,7 +539,6 @@ class Utils extends React.Component {
                         <th scope="col">Papà</th>
                         <th scope="col">Cell Papà</th>
                         <th scope="col">Mail Papà</th>
-
                       </tr>
                     </thead>
                     <tbody>
@@ -560,29 +550,29 @@ class Utils extends React.Component {
 
               <Card className="mt-3">          
                 <CardHeader className=" bg-transparent">
-                <Row className="align-items-center">
+                  <Row className="align-items-center">
                     <div className="col">
                       <h3 className=" mb-0" style={{cursor: "pointer"}} onClick={this.toggleBurocrazia}>Burocrazia</h3>
                     </div>
                     <div className="col md-4 text-right">
                       <InputGroup className="mb-1">
-                      <Input type="text" placeholder={"Filtra: " + this.state.burocraziaFilterType} className="mb-0" onChange={this.filterBurocraziaList} />
+                        <Input type="text" placeholder={"Filtra: " + this.state.burocraziaFilterType} className="mb-0" onChange={this.filterBurocraziaList} />
                         <InputGroupButtonDropdown className="mb-1" addonType="append" isOpen={this.state.dropdownBurocraziaOpen} toggle={this.toggleBurocraziaDropDown}>
                           <InputGroupText style={{paddingTop: "0.03rem",paddingRight:"0.04rem",paddingBottom: "0.03rem",paddingLeft:"0.04rem"}}>
-                          <DropdownToggle outline color="primary" >
-                            <i className="ni ni-zoom-split-in" />
-                          </DropdownToggle>
-                          <DropdownMenu >
-                            <DropdownItem header style={{color: "blue"}} >Seleziona Filtro</DropdownItem>
-                            <DropdownItem divider />
-                            <DropdownItem onClick={e => this.setState({burocraziaFilterType: "nome"})}>Nome</DropdownItem>
-                            <DropdownItem onClick={e => this.setState({burocraziaFilterType: "censimento"})}>Censimento</DropdownItem>
-                            <DropdownItem onClick={e => this.setState({burocraziaFilterType: "fogliCensimento"})}>Fogli</DropdownItem>
-                            <DropdownItem onClick={e => this.setState({burocraziaFilterType: "privacy"})}>Privacy</DropdownItem>
-                            <DropdownItem onClick={e => this.setState({burocraziaFilterType: "autorizzazione"})}>Autorizzazione</DropdownItem>
-                            <DropdownItem onClick={e => this.setState({burocraziaFilterType: "schedaSanitaria"})}>Scheda</DropdownItem>
-                            <DropdownItem onClick={e => this.setState({burocraziaFilterType: "tesseraSanitaria"})}>Tessera</DropdownItem>
-                          </DropdownMenu>
+                            <DropdownToggle outline color="primary" >
+                              <i className="ni ni-zoom-split-in" />
+                            </DropdownToggle>
+                            <DropdownMenu >
+                              <DropdownItem header style={{color: "blue"}} >Seleziona Filtro</DropdownItem>
+                              <DropdownItem divider />
+                              <DropdownItem onClick={e => this.setState({burocraziaFilterType: "nome"})}>Nome</DropdownItem>
+                              <DropdownItem onClick={e => this.setState({burocraziaFilterType: "censimento"})}>Censimento</DropdownItem>
+                              <DropdownItem onClick={e => this.setState({burocraziaFilterType: "fogliCensimento"})}>Fogli</DropdownItem>
+                              <DropdownItem onClick={e => this.setState({burocraziaFilterType: "privacy"})}>Privacy</DropdownItem>
+                              <DropdownItem onClick={e => this.setState({burocraziaFilterType: "autorizzazione"})}>Autorizzazione</DropdownItem>
+                              <DropdownItem onClick={e => this.setState({burocraziaFilterType: "schedaSanitaria"})}>Scheda</DropdownItem>
+                              <DropdownItem onClick={e => this.setState({burocraziaFilterType: "tesseraSanitaria"})}>Tessera</DropdownItem>
+                            </DropdownMenu>
                           </InputGroupText>                                                
                         </InputGroupButtonDropdown>                                                
                       </InputGroup>
@@ -600,7 +590,6 @@ class Utils extends React.Component {
                         <th scope="col">Autorizzazione</th>
                         <th scope="col">Scheda</th>
                         <th scope="col">Tessera</th>
-
                       </tr>
                     </thead>
                     <tbody>
@@ -609,6 +598,7 @@ class Utils extends React.Component {
                   </Table>               
                 </Collapse>        
               </Card>
+
             </div>
           </Row>
         </Container>

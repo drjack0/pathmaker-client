@@ -1,18 +1,8 @@
 /*!
 
 =========================================================
-* Argon Dashboard React - v1.1.0
+* PathMaker DashBoard React
 =========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2019 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
 import React, {useState} from "react";
@@ -30,25 +20,22 @@ import {
   InputGroupAddon,
   InputGroupText,
   InputGroup,
-  Row,
   Col,
   Modal,
   ModalHeader,
-  ModalBody,
-  ModalFooter
+  ModalBody
 } from "reactstrap";
 
 export default function ForgotPassword(props) {
 
   const [username,setUsername] = useState("");
   
-
   const [modal,SetModal] = useState(false);
   const toggle = () => SetModal(!modal);
 
   const [verificationCode,setVerificationCode] = useState("");
-  const[password,setPassword] = useState("");
-  const[confirmPassword,setConfirmPassword] = useState("");
+  const [password,setPassword] = useState("");
+  const [confirmPassword,setConfirmPassword] = useState("");
 
   function validateForm(){
     return username.length > 0;
@@ -63,7 +50,6 @@ export default function ForgotPassword(props) {
     event.preventDefault();
 
     try{
-      console.log(username);
       const userReturnAuth = await Auth.forgotPassword(username);
       console.log(userReturnAuth.user);
       SetModal(!modal);
@@ -75,9 +61,7 @@ export default function ForgotPassword(props) {
 
   async function handleConfirm(event){
       event.preventDefault();
-      
       try{
-        console.log(username, verificationCode, password);
         const func = await Auth.forgotPasswordSubmit(username,verificationCode,password);
         console.log(func);
         alert("Password Resettata con successo");
@@ -115,67 +99,61 @@ export default function ForgotPassword(props) {
                   </Button>                                  
                 </div>
               </Form>
-              <hr></hr>
+              <hr/>
+
                 {/* FORM CONFIRM FORGOT PASSWORD - CODE,PASS,CONFIRM_PASS CHECK*/}
-                <div className="text-center">
-                    <Button type="button" className="btn btn-warning mb-3" onClick={toggle}>Ho già un codice</Button>
-                    <Modal isOpen={modal} toggle={toggle} className="modal-dialog modal-danger modal-dialog-centered modal-">
-                        <div className="modal-content bg-gradient-danger">
-                            <ModalHeader toggle={toggle}>
-                            </ModalHeader>
-
-                            <ModalBody>
-                                <div className="py-3 text-center">
-                                    <i className="ni ni-settings-gear-65 ni-3x"></i>
-                                    <h4 className="heading mt-4">Conferma Reset Password</h4>
-                                    <p>Compila le seguenti informazioni per il reset della password</p>
-                                </div>
-                                <Form role="form" onSubmit={handleConfirm}>
-                                  <FormGroup controlid="verificationCode">
-                                    <InputGroup className="input-group-alternative mb-3">
-                                      <InputGroupAddon addonType="prepend">
-                                        <InputGroupText>
-                                          <i className="ni ni-email-83" />
-                                        </InputGroupText>
-                                      </InputGroupAddon>
-                                      <Input placeholder="Verification Code" type="text" autoComplete="new-email" onChange = {e => setVerificationCode(e.target.value)}/>
-                                    </InputGroup>
-                                  </FormGroup>
-                                  <FormGroup controlid="password">
-                                    <InputGroup className="input-group-alternative mb-3">
-                                      <InputGroupAddon addonType="prepend">
-                                        <InputGroupText>
-                                          <i className="ni ni-email-83" />
-                                        </InputGroupText>
-                                      </InputGroupAddon>
-                                      <Input placeholder="New Password" type="password" autoComplete="new-password" onChange = {e => setPassword(e.target.value)}/>
-                                    </InputGroup>
-                                  </FormGroup>
-                                  <FormGroup controlid="confirmPassword">
-                                    <InputGroup className="input-group-alternative mb-3">
-                                      <InputGroupAddon addonType="prepend">
-                                        <InputGroupText>
-                                          <i className="ni ni-email-83" />
-                                        </InputGroupText>
-                                      </InputGroupAddon>
-                                      <Input placeholder="Confirm Password" type="password" autoComplete="new-password" onChange = {e => setConfirmPassword(e.target.value)}/>
-                                    </InputGroup>
-                                  </FormGroup>
-                                  <div className="text-center">
-                                    <Button disabled = {!validateConfirm()} className="mt-4" color="primary" type="submit">
-                                      Confirm New Password
-                                     </Button>                                  
-                                    </div>
-                                </Form> 
-                            </ModalBody>
-
-                            {/*<ModalFooter>
-                                <Button className="btn btn-white" onClick={handleConfirm}>Invia</Button>{' '}
-                                <Button className="btn btn-link text-white ml-auto" onClick={toggle}>Ok, Ho capito!</Button>
-                            </ModalFooter>*/}
-                        </div>         
-                    </Modal>
-                </div>                          
+              <div className="text-center">
+                <Button type="button" className="btn btn-warning mb-3" onClick={toggle}>Ho già un codice</Button>
+                <Modal isOpen={modal} toggle={toggle} className="modal-dialog modal-danger modal-dialog-centered modal-">
+                  <div className="modal-content bg-gradient-danger">
+                    <ModalHeader toggle={toggle}></ModalHeader>
+                    <ModalBody>
+                      <div className="py-3 text-center">
+                        <i className="ni ni-settings-gear-65 ni-3x"></i>
+                        <h4 className="heading mt-4">Conferma Reset Password</h4>
+                        <p>Compila le seguenti informazioni per il reset della password</p>
+                      </div>
+                      <Form role="form" onSubmit={handleConfirm}>
+                        <FormGroup controlid="verificationCode">
+                          <InputGroup className="input-group-alternative mb-3">
+                            <InputGroupAddon addonType="prepend">
+                              <InputGroupText>
+                                <i className="ni ni-email-83" />
+                              </InputGroupText>
+                            </InputGroupAddon>
+                            <Input placeholder="Verification Code" type="text" autoComplete="new-email" onChange = {e => setVerificationCode(e.target.value)}/>
+                          </InputGroup>
+                        </FormGroup>
+                        <FormGroup controlid="password">
+                          <InputGroup className="input-group-alternative mb-3">
+                            <InputGroupAddon addonType="prepend">
+                              <InputGroupText>
+                                <i className="ni ni-email-83" />
+                              </InputGroupText>
+                            </InputGroupAddon>
+                            <Input placeholder="New Password" type="password" autoComplete="new-password" onChange = {e => setPassword(e.target.value)}/>
+                          </InputGroup>
+                        </FormGroup>
+                        <FormGroup controlid="confirmPassword">
+                          <InputGroup className="input-group-alternative mb-3">
+                            <InputGroupAddon addonType="prepend">
+                              <InputGroupText>
+                                <i className="ni ni-email-83" />
+                              </InputGroupText>
+                            </InputGroupAddon>
+                            <Input placeholder="Confirm Password" type="password" autoComplete="new-password" onChange = {e => setConfirmPassword(e.target.value)}/>
+                          </InputGroup>
+                        </FormGroup>
+                        <div className="text-center">
+                          <Button disabled = {!validateConfirm()} className="mt-4" color="primary" type="submit">
+                            Confirm New Password
+                          </Button>                                  
+                        </div>
+                      </Form> 
+                    </ModalBody>
+                  </div>         
+                </Modal>
+              </div>                          
             </CardBody>
           </Card>
         </Col>
