@@ -14,7 +14,7 @@ Argon Dashboard React is built with over 100 individual components, giving freed
 - Clone the repo: `git clone https://github.com/drjack0/pathmaker-client.git`.
 - `npm install && npm start`
 - Registration requires authorization from an administrator user, given the presence of sensitive data. Therefore, in order to get the login credentials, contact me (You can still try registration and mailing code service)
-- Wait until your browser opens, then enter your login credentials in webapp Login Form
+- Wait until your browser opens, then enter your login credentials in webapp Login Form (https://pathmaker.it)
 
 ## Backend Repositories
 
