@@ -13,6 +13,8 @@ import { Card, CardBody, CardTitle, Container, Row, Col, Dropdown, DropdownToggl
 class Header extends React.Component {
   constructor(props){
     super(props);
+    console.log(this.getMeseDropdown((new Date(Date.now())).getMonth()+1));
+    console.log(new Date(Date.now()).getMonth())
     this.state = {
       dropdownMensiliOpen: false,
       monthType: this.getMeseDropdown((new Date(Date.now())).getMonth()+1),
@@ -89,38 +91,6 @@ class Header extends React.Component {
     return total
   }
 
-  getMese = () => {
-    let meseNumber = (new Date(Date.now())).getMonth() + 1;
-    let mese;
-    switch(meseNumber){
-      case 1:
-        mese = "Gennaio";
-        break;
-      case 2:
-        mese = "Febbraio";
-        break;
-      case 3:
-        mese ="Marzo";
-        break;
-      case 4:
-        mese ="Aprile";
-        break;
-      case 5:
-        mese ="Maggio";
-        break;
-      case 10:
-        mese ="Ottobre";
-        break;
-      case 11:
-        mese="Novembre";
-        break;
-      case 12:
-        mese ="Dicembre";
-        break
-    }
-    return mese;
-  }
-
   getMeseDropdown = (meseNumber) => {
     let mese;
     switch(meseNumber){
@@ -139,6 +109,14 @@ class Header extends React.Component {
       case 5:
         mese ="Maggio";
         break;
+      case 6:
+        mese ="Giugno";
+      case 7:
+        mese = "Luglio";
+      case 8:
+        mese = "Agosto";
+      case 9:
+        mese = "Settembre";
       case 10:
         mese ="Ottobre";
         break;

@@ -80,6 +80,7 @@ function App (props){
         bypassCache: true
       });
       if(data){
+        console.log(data);
         setUserNome(data.attributes["custom:nome"]);
         setUserCognome(data.attributes['custom:cognome']);
         setUserEmail(data.attributes.email);
